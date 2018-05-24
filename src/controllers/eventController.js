@@ -12,6 +12,7 @@ module.exports = {
           error: 'The token is not valid! Please sign in and try again!'
         })
       }
+      const imgDefault = 'public/images/SYSU.PNG'
       var placeId = req.body.placeId
       if (!req.body.placeId) {
         var place = Place.create({
@@ -19,7 +20,8 @@ module.exports = {
           address: req.body.address,
           detail: req.body.placeDetail,
           price: req.body.price,
-          ownerId: result.id
+          ownerId: result.id,
+          img: (req.file) ? req.file.path : imgDefault
         })
         placeId = place.id
       }
@@ -28,8 +30,10 @@ module.exports = {
         detail: req.body.detail,
         startTime: req.body.startTime,
         endTime: req.body.endTime,
+        maxNum: req.body.maxNum,
         organizerId: result.id,
-        PlaceId: placeId
+        placeId: placeId,
+        img: (req.file) ? req.file.path : imgDefault
       })
 
       const eventJSON = event.toJSON()
@@ -80,13 +84,16 @@ module.exports = {
           error: 'The token is not valid! Please sign in and try again!'
         })
       }
+      const imgDefault = 'public/images/SYSU.PNG'
       var placeId = req.body.placeId
       if (!req.body.placeId) {
         var place = Place.create({
           name: req.body.placeName,
           address: req.body.address,
           detail: req.body.placeDetail,
-          price: req.body.price
+          price: req.body.price,
+          ownerId: result.id,
+          img: (req.file) ? req.file.path : imgDefault
         })
         placeId = place.id
       }
@@ -95,8 +102,10 @@ module.exports = {
         detail: req.body.detail,
         startTime: req.body.startTime,
         endTime: req.body.endTime,
+        maxNum: req.body.maxNum,
         organizerId: result.id,
-        PlaceId: placeId
+        placeId: placeId,
+        img: (req.file) ? req.file.path : event.img
       })
       res.send({
         event: event.toJSON()
@@ -111,15 +120,25 @@ module.exports = {
     try {
       var events = await Event.findAll({
         include: [{model: User, as: 'organizer'}, {model: Place, as: 'place'}]
+      }).map(async (event) => {
+        var count = await Participation.findAll({
+          where: {
+            EventId: event.id
+          }
+        })
+        event = event.toJSON()
+        event.participantsNum = (count.length === undefined) ? 0 : count.length
+        return event
       })
       res.send({events: events})
     } catch (err) {
+      console.log(err.message)
       res.status(400).send({
         error: 'Some wrong occured when getting data!'
       })
     }
   },
-  async getAllEventsParticipantsIn (req, res) {
+  async getAllEventsParticipatesIn (req, res) {
     try {
       const token = req.body.token
       const result = jwt.verify(token, config.authServiceToken.secretKey)
@@ -139,6 +158,13 @@ module.exports = {
           },
           include: [{model: User, as: 'organizer'}, {model: Place, as: 'place'}]
         })
+        var count = await Participation.findAll({
+          where: {
+            EventId: res.id
+          }
+        })
+        res = res.toJSON()
+        res.participantsNum = (count.length === undefined) ? 0 : count.length
         return res
       })
       res.send({
@@ -158,6 +184,21 @@ module.exports = {
       if (!result) {
         return res.status(400).send({
           error: 'The token is not valid! Please sign in and try again!'
+        })
+      }
+      var event = await Event.findOne({
+        where: {
+          id: req.body.id
+        }
+      })
+      var count = await Participation.findAll({
+        where: {
+          EventId: res.id
+        }
+      })
+      if (count.length === event) {
+        return res.status(400).send({
+          error: "The event's participants is equal to the max, you can't join in it."
         })
       }
       await Participation.create({

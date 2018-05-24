@@ -4,7 +4,8 @@ module.exports = (sequelize, DataTypes) => {
     address: { type: DataTypes.STRING, unique: true, allowNull: false },
     detail: { type: DataTypes.STRING },
     price: { type: DataTypes.DOUBLE, defaultValue: 0 },
-    available: { type: DataTypes.BOOLEAN, defaultValue: true }
+    available: { type: DataTypes.BOOLEAN, defaultValue: true },
+    img: DataTypes.STRING
   })
 
   return Place

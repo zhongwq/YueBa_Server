@@ -2,6 +2,7 @@ const authController = require('./controllers/authController')
 const authControllerPolicy = require('./policies/authControllerPolicy')
 const placeController = require('./controllers/placeController')
 const eventController = require('./controllers/eventController')
+const uploader = require('./utils/uploader')
 
 module.exports = (app) => {
   /***
@@ -18,9 +19,13 @@ module.exports = (app) => {
   /***
    * Place Part
    */
+  app.get('/getAllValidPlaces',
+    placeController.getAllPlaces)
   app.post('/addPlace',
+    uploader.placeImg.single('image'),
     placeController.addPlace)
   app.post('/updatePlace',
+    uploader.placeImg.single('image'),
     placeController.updatePlace)
   app.post('/deletePlace',
     placeController.deletePlace)
@@ -28,15 +33,17 @@ module.exports = (app) => {
    * Event Part
    */
   app.post('/addEvent',
+    uploader.eventImg.single('image'),
     eventController.addEvent)
   app.post('/updateEvent',
+    uploader.eventImg.single('image'),
     eventController.updateEvent)
   app.post('/deleteEvent',
     eventController.deleteEvent)
   app.get('/getAllEvents',
     eventController.getAllEvents)
   app.post('/getParticipateEvents',
-    eventController.getAllEventsParticipantsIn)
+    eventController.getAllEventsParticipatesIn)
   app.post('/participate',
     eventController.participateEvent)
   app.post('/exitEvent',

@@ -31,8 +31,8 @@ module.exports = {
   },
   async login (req, res) {
     try {
-      const {username, email, password} = req.body
-      const user = await User.findOne({ where: { [Sequelize.Op.or]: [{email: email}, {username: username}] } })
+      const {account, password} = req.body
+      const user = await User.findOne({ where: { [Sequelize.Op.or]: [{email: account}, {username: account}] } })
 
       if (!user) {
         return res.status(400).send({
