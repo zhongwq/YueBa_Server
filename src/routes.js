@@ -29,6 +29,8 @@ module.exports = (app) => {
     placeController.updatePlace)
   app.post('/deletePlace',
     placeController.deletePlace)
+  app.post('/getAllOwnedPlace',
+    placeController.getOwnedPlace)
   /***
    * Event Part
    */
@@ -42,6 +44,8 @@ module.exports = (app) => {
     eventController.deleteEvent)
   app.get('/getAllEvents',
     eventController.getAllEvents)
+  app.post('/getAllOwnedEvents',
+    eventController.getAllOwnedEvents)
   app.post('/getParticipateEvents',
     eventController.getAllEventsParticipatesIn)
   app.post('/participate',

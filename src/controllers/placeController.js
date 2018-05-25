@@ -20,6 +20,29 @@ module.exports = {
       })
     }
   },
+  async getOwnedPlace (req, res) {
+    try {
+      const token = req.body.token
+      const result = jwt.verify(token, config.authServiceToken.secretKey)
+      if (!result) {
+        return res.status(400).send({
+          error: 'The token is not valid! Please sign in and try again!'
+        })
+      }
+      var places = await Place.findAll({
+        where: {
+          ownerId: result.id
+        }
+      })
+      res.send({
+        places: places
+      })
+    } catch (err) {
+      res.status(400).send({
+        error: 'Some wrong occoured when getting data!'
+      })
+    }
+  },
   async addPlace (req, res) {
     try {
       const token = req.body.token
@@ -29,7 +52,6 @@ module.exports = {
           error: 'The token is not valid! Please sign in and try again!'
         })
       }
-      console.log(req.body)
       const imgDefault = 'public/images/SYSU.PNG'
       var place = await Place.create({
         name: req.body.name,

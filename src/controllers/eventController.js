@@ -138,6 +138,37 @@ module.exports = {
       })
     }
   },
+  async getAllOwnedEvents (req, res) {
+    try {
+      const token = req.body.token
+      const result = jwt.verify(token, config.authServiceToken.secretKey)
+      if (!result) {
+        return res.status(400).send({
+          error: 'The token is not valid! Please sign in and try again!'
+        })
+      }
+      var events = await Event.findAll({
+        where: {
+          organizerId: result.id
+        },
+        include: [{model: Place, as: 'place'}]
+      }).map(async (event) => {
+        var count = await Participation.findAll({
+          where: {
+            EventId: event.id
+          }
+        })
+        event = event.toJSON()
+        event.participantsNum = (count.length === undefined) ? 0 : count.length
+        return event
+      })
+      res.send({events: events})
+    } catch (err) {
+      res.status(400).send({
+        error: 'Some wrong occured when getting data!'
+      })
+    }
+  },
   async getAllEventsParticipatesIn (req, res) {
     try {
       const token = req.body.token
