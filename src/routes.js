@@ -12,6 +12,7 @@ module.exports = (app) => {
     res.send('index')
   })
   app.post('/register',
+    uploader.userImg.single('image'),
     authControllerPolicy.register,
     authController.register)
   app.post('/login',
@@ -31,6 +32,10 @@ module.exports = (app) => {
     placeController.deletePlace)
   app.post('/getAllOwnedPlace',
     placeController.getOwnedPlace)
+  app.post('/getDetailPlace',
+    placeController.getDetil)
+  app.post('/getSinglePlace',
+    placeController.getSinglePlace)
   /***
    * Event Part
    */
@@ -52,4 +57,8 @@ module.exports = (app) => {
     eventController.participateEvent)
   app.post('/exitEvent',
     eventController.exitEvent)
+  app.post('/getDetailEvent',
+    eventController.getDetail)
+  app.post('/getSingleEvent',
+    eventController.getSingleEvent)
 }

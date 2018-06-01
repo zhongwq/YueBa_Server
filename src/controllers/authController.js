@@ -12,11 +12,14 @@ function jwtSignUser (user) {
 module.exports = {
   async register (req, res) {
     try {
+      const imgDefault = 'public/images/userImage/default.jpg'
       var user = await User.create({
         username: req.body.username,
         email: req.body.email,
         password: req.body.password,
-        phone: req.body.phone
+        phone: req.body.phone,
+        img: (req.file) ? req.file.path : imgDefault
+
       })
       const userJson = user.toJSON()
       res.send({

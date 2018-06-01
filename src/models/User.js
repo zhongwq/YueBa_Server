@@ -21,7 +21,8 @@ module.exports = (sequelize, DataTypes) => {
     username: { type: DataTypes.STRING, unique: true, allowNull: false },
     email: { type: DataTypes.STRING, unique: true, allowNull: false },
     password: DataTypes.STRING,
-    phone: { type: DataTypes.STRING, unique: true, allowNull: false }
+    phone: { type: DataTypes.STRING, unique: true, allowNull: false },
+    img: DataTypes.STRING
   }, {
     hooks: {
       beforeSave: hashPassword

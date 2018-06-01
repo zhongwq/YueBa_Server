@@ -1,4 +1,4 @@
-const {Place, User} = require('../models')
+const {Place, User, Event} = require('../models')
 const jwt = require('jsonwebtoken')
 const config = require('../config/config')
 
@@ -32,11 +32,27 @@ module.exports = {
       var places = await Place.findAll({
         where: {
           ownerId: result.id
-        }
+        },
+        include: [{model: User, as: 'owner'}]
       })
       res.send({
         places: places
       })
+    } catch (err) {
+      res.status(400).send({
+        error: 'Some wrong occoured when getting data!'
+      })
+    }
+  },
+  async getSinglePlace (req, res) {
+    try {
+      var place = await Place.findOne({
+        where: {
+          id: req.body.id
+        },
+        include: [{model: User, as: 'owner'}]
+      })
+      res.send(place.toJSON())
     } catch (err) {
       res.status(400).send({
         error: 'Some wrong occoured when getting data!'
@@ -52,7 +68,7 @@ module.exports = {
           error: 'The token is not valid! Please sign in and try again!'
         })
       }
-      const imgDefault = 'public/images/SYSU.PNG'
+      const imgDefault = 'public/images/placeImage/Place.jpg'
       var place = await Place.create({
         name: req.body.name,
         address: req.body.address,
@@ -62,15 +78,13 @@ module.exports = {
         img: (req.file) ? req.file.path : imgDefault
       })
 
-      console.log(place)
-
       res.send({
         place: place.toJSON()
       })
     } catch (err) {
-      console.log(err)
+      console.log(err.fields[0])
       res.status(400).send({
-        error: 'Some wrong occoured when getting data!'
+        error: err.fields[0] + ' has been used!'
       })
     }
   },
@@ -130,11 +144,57 @@ module.exports = {
           error: 'No place is found, please check your request!'
         })
       }
+      if (!place.available) {
+        res.status(400).send({
+          error: 'The place is using, please contact the using person to change his place!'
+        })
+      }
       await place.destroy()
       res.send({
         info: 'Delete place successfully'
       })
     } catch (err) {
+      res.status(400).send({
+        error: 'Some error occured when deleting event!'
+      })
+    }
+  },
+  async getDetil (req, res) {
+    try {
+      const token = req.body.token
+      const result = jwt.verify(token, config.authServiceToken.secretKey)
+      if (!result) {
+        return res.status(400).send({
+          error: 'The token is not valid! Please sign in and try again!'
+        })
+      }
+      var place = await Place.findOne({
+        where: {
+          id: req.body.id
+        },
+        include: [{model: User, as: 'owner'}]
+      })
+      place = place.toJSON()
+      var editflag = false
+      if (place.ownerId === result.id) {
+        editflag = true
+      }
+      if (place.available === false) {
+        var event = await Event.findOne({
+          where: {
+            placeId: place.id
+          }
+        })
+        event = event.toJSON()
+        place.eventItem = event
+      }
+      place.editFlag = editflag
+
+      res.send({
+        detail: place
+      })
+    } catch (err) {
+      console.log(err.message)
       res.status(400).send({
         error: 'Some error occured when deleting event!'
       })

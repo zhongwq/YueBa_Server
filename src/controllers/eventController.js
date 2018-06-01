@@ -12,10 +12,11 @@ module.exports = {
           error: 'The token is not valid! Please sign in and try again!'
         })
       }
-      const imgDefault = 'public/images/SYSU.PNG'
+      const imgDefault = 'public/images/eventImage/event.jpg'
       var placeId = req.body.placeId
+      var place
       if (!req.body.placeId) {
-        var place = Place.create({
+        place = Place.create({
           name: req.body.placeName,
           address: req.body.address,
           detail: req.body.placeDetail,
@@ -24,6 +25,12 @@ module.exports = {
           img: (req.file) ? req.file.path : imgDefault
         })
         placeId = place.id
+      } else {
+        place = await Place.findOne({
+          where: {
+            id: placeId
+          }
+        })
       }
       var event = await Event.create({
         name: req.body.name,
@@ -34,6 +41,10 @@ module.exports = {
         organizerId: result.id,
         placeId: placeId,
         img: (req.file) ? req.file.path : imgDefault
+      })
+
+      await place.update({
+        available: false
       })
 
       const eventJSON = event.toJSON()
@@ -48,6 +59,21 @@ module.exports = {
       })
     }
   },
+  async getSingleEvent (req, res) {
+    try {
+      var event = await Event.findOne({
+        where: {
+          id: req.body.id
+        },
+        include: [{model: User, as: 'organizer'}, {model: Place, as: 'place'}]
+      })
+      res.send(event.toJSON())
+    } catch (err) {
+      res.status(400).send({
+        error: 'Some wrong occoured when getting data!'
+      })
+    }
+  },
   async deleteEvent (req, res) {
     const token = req.body.token
     const result = jwt.verify(token, config.authServiceToken.secretKey)
@@ -59,7 +85,7 @@ module.exports = {
     var event = await Event.findOne({
       where: {
         id: req.body.id,
-        UserId: result.id
+        organizerId: result.id
       },
       include: [{ model: Place, as: 'place' }]
     })
@@ -75,7 +101,7 @@ module.exports = {
     try {
       const event = await Event.findOne({
         where: {id: req.body.id},
-        include: [{model: User, as: 'organizer'}]
+        include: [{model: User, as: 'organizer'}, {model: Place, as: 'place'}]
       })
       const token = req.body.token
       const result = jwt.verify(token, config.authServiceToken.secretKey)
@@ -84,7 +110,7 @@ module.exports = {
           error: 'The token is not valid! Please sign in and try again!'
         })
       }
-      const imgDefault = 'public/images/SYSU.PNG'
+      const imgDefault = 'public/images/eventImage/event.jpg'
       var placeId = req.body.placeId
       if (!req.body.placeId) {
         var place = Place.create({
@@ -96,6 +122,11 @@ module.exports = {
           img: (req.file) ? req.file.path : imgDefault
         })
         placeId = place.id
+      }
+      if (placeId !== event.place.id) {
+        event.place.update({
+          available: true
+        })
       }
       await event.update({
         name: req.body.name,
@@ -151,7 +182,7 @@ module.exports = {
         where: {
           organizerId: result.id
         },
-        include: [{model: Place, as: 'place'}]
+        include: [{model: User, as: 'organizer'}, {model: Place, as: 'place'}]
       }).map(async (event) => {
         var count = await Participation.findAll({
           where: {
@@ -199,7 +230,7 @@ module.exports = {
         return res
       })
       res.send({
-        participants: participants
+        events: participants
       })
     } catch (err) {
       console.log(err)
@@ -210,6 +241,7 @@ module.exports = {
   },
   async participateEvent (req, res) {
     try {
+      console.log(req.body)
       const token = req.body.token
       const result = jwt.verify(token, config.authServiceToken.secretKey)
       if (!result) {
@@ -224,10 +256,10 @@ module.exports = {
       })
       var count = await Participation.findAll({
         where: {
-          EventId: res.id
+          EventId: req.body.id
         }
       })
-      if (count.length === event) {
+      if (count.length === event.maxNum) {
         return res.status(400).send({
           error: "The event's participants is equal to the max, you can't join in it."
         })
@@ -240,6 +272,7 @@ module.exports = {
         info: 'Participate successfully!'
       })
     } catch (err) {
+      console.log(err.message)
       res.status(400).send({
         error: 'Some wrong occured when participate in event!!'
       })
@@ -266,6 +299,63 @@ module.exports = {
       })
     } catch (err) {
       console.log(err)
+      res.status(400).send({
+        error: 'Some wrong occured when participate in event!!'
+      })
+    }
+  },
+  async getDetail (req, res) {
+    try {
+      const token = req.body.token
+      const result = jwt.verify(token, config.authServiceToken.secretKey)
+      if (!result) {
+        return res.status(400).send({
+          error: 'The token is not valid! Please sign in and try again!'
+        })
+      }
+      var event = await Event.findOne({
+        where: {
+          id: req.body.id
+        },
+        include: [{model: User, as: 'organizer'}, {model: Place, as: 'place'}]
+      })
+
+      event = event.toJSON()
+
+      var participators = await Participation.findAll({
+        where: {
+          EventId: req.body.id
+        }
+      }).map(async (participant) => {
+        var user = await User.findOne({
+          where: {
+            id: participant.UserId
+          }
+        })
+        return user.toJSON()
+      })
+
+      event.participators = participators
+      var flag = false
+      var editFlag = false
+      if (event.organizerId === result.id) {
+        flag = true
+        editFlag = true
+      } else {
+        for (var i = 0; i < participators.length; i++) {
+          if (participators[i].id === result.id) {
+            flag = true
+            break
+          }
+        }
+      }
+      event.flag = flag
+      event.editFlag = editFlag
+      res.send({
+        detail: event
+      })
+    } catch (err) {
+      console.log(err.message)
       res.status(400).send({
         error: 'Some wrong occured when participate in event!!'
       })
