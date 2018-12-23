@@ -16,6 +16,14 @@ const eventStorage = multer.diskStorage({
   }
 })
 
+const postStorage = multer.diskStorage({
+  destination: 'public/images/postImage/',
+  filename: function (req, file, cb) {
+    var fileformat = (file.originalname).split('.')
+    cb(null, fileformat[0] + '-' + Date.now() + '.' + fileformat[fileformat.length - 1])
+  }
+})
+
 const userStorage = multer.diskStorage({
   destination: 'public/images/userImage/',
   filename: function (req, file, cb) {
@@ -33,5 +41,8 @@ module.exports = {
   }),
   userImg: multer({
     storage: userStorage
+  }),
+  postImg: multer({
+    storage: postStorage
   })
 }

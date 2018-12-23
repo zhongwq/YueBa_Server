@@ -2,6 +2,7 @@ const authController = require('./controllers/authController')
 const authControllerPolicy = require('./policies/authControllerPolicy')
 const placeController = require('./controllers/placeController')
 const eventController = require('./controllers/eventController')
+const postController = require('./controllers/postController')
 const uploader = require('./utils/uploader')
 
 module.exports = (app) => {
@@ -61,4 +62,14 @@ module.exports = (app) => {
     eventController.getDetail)
   app.post('/getSingleEvent',
     eventController.getSingleEvent)
+  /***
+   * Post Part
+   */
+  app.get('/getAllPosts',
+    postController.getAllPosts)
+  app.post('/addPost',
+    uploader.postImg.array('images', 9),
+    postController.addPost)
+  app.post('/deletePost',
+    postController.deletePost)
 }

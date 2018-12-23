@@ -4,7 +4,8 @@
   "description": "Server for yueba",
   "main": "index.js",
   "scripts": {
-    "start": "./node_modules/nodemon/bin/nodemon.js src/app.js --exec 'npm run lint && node'",
+    "test": "./node_modules/nodemon/bin/nodemon.js src/app.js --exec 'npm run lint && node'",
+    "start": "node src/app.js",
     "lint": "./node_modules/.bin/eslint src/**/*.js"
   },
   "author": "zhongwq",
