@@ -18,6 +18,8 @@ module.exports = (app) => {
     authController.register)
   app.post('/login',
     authController.login)
+  app.get('/usericon/:username',
+    authController.getIcon)
   /***
    * Place Part
    */

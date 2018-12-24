@@ -65,7 +65,7 @@ module.exports = {
         where: {
           id: req.body.id
         },
-        include: [{model: User, as: 'organizer'}, {model: Place, as: 'place'}]
+        include: [{model: User, as: 'organizer', attributes: ['id', 'username', 'email', 'phone', 'img']}, {model: Place, as: 'place'}]
       })
       res.send(event.toJSON())
     } catch (err) {
@@ -150,7 +150,7 @@ module.exports = {
   async getAllEvents (req, res) {
     try {
       var events = await Event.findAll({
-        include: [{model: User, as: 'organizer'}, {model: Place, as: 'place'}]
+        include: [{model: User, as: 'organizer', attributes: ['id', 'username', 'email', 'phone', 'img']}, {model: Place, as: 'place'}]
       }).map(async (event) => {
         var count = await Participation.findAll({
           where: {
@@ -182,7 +182,7 @@ module.exports = {
         where: {
           organizerId: result.id
         },
-        include: [{model: User, as: 'organizer'}, {model: Place, as: 'place'}]
+        include: [{model: User, as: 'organizer', attributes: ['id', 'username', 'email', 'phone', 'img']}, {model: Place, as: 'place'}]
       }).map(async (event) => {
         var count = await Participation.findAll({
           where: {
@@ -218,7 +218,7 @@ module.exports = {
           where: {
             id: participant.EventId
           },
-          include: [{model: User, as: 'organizer'}, {model: Place, as: 'place'}]
+          include: [{model: User, as: 'organizer', attributes: ['id', 'username', 'email', 'phone', 'img']}, {model: Place, as: 'place'}]
         })
         var count = await Participation.findAll({
           where: {
@@ -316,7 +316,7 @@ module.exports = {
         where: {
           id: req.body.id
         },
-        include: [{model: User, as: 'organizer'}, {model: Place, as: 'place'}]
+        include: [{model: User, as: 'organizer', attributes: ['id', 'username', 'email', 'phone', 'img']}, {model: Place, as: 'place'}]
       })
 
       event = event.toJSON()

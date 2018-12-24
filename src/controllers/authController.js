@@ -19,14 +19,16 @@ module.exports = {
         password: req.body.password,
         phone: req.body.phone,
         img: (req.file) ? req.file.path : imgDefault
-
       })
       const userJson = user.toJSON()
+      var tmpData = user.dataValues
+      delete tmpData.password
       res.send({
-        user: userJson,
+        user: tmpData,
         token: jwtSignUser(userJson)
       })
     } catch (err) {
+      console.log(err)
       res.status(400).send({
         error: 'The ' + err.errors[0].path + ' is in use!'
       })
@@ -35,7 +37,7 @@ module.exports = {
   async login (req, res) {
     try {
       const {account, password} = req.body
-      const user = await User.findOne({ where: { [Sequelize.Op.or]: [{email: account}, {username: account}] } })
+      var user = await User.findOne({ where: {[Sequelize.Op.or]: [{email: account}, {username: account}]} })
 
       if (!user) {
         return res.status(400).send({
@@ -47,8 +49,10 @@ module.exports = {
       const isPasswordValid = await user.comparePassword(password)
 
       if (isPasswordValid) {
+        var tmpData = user.dataValues
+        delete tmpData.password
         res.send({
-          user: userJson,
+          user: tmpData,
           token: jwtSignUser(userJson)
         })
       } else {
@@ -56,6 +60,24 @@ module.exports = {
           error: 'The password is wrong!'
         })
       }
+    } catch (err) {
+      console.log(err)
+      res.status(400).send({
+        error: 'Somthing wrong with the server!'
+      })
+    }
+  },
+  async getIcon (req, res) {
+    try {
+      var user = await User.findOne({ where: {username: req.params.username} })
+      if (!user) {
+        return res.status(400).send({
+          error: "Can't find the user!"
+        })
+      }
+      res.send({
+        image: user.img
+      })
     } catch (err) {
       res.status(400).send({
         error: 'Somthing wrong with the server!'

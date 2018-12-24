@@ -9,7 +9,7 @@ module.exports = {
         where: {
           available: true
         },
-        include: [{model: User, as: 'owner'}]
+        include: [{model: User, as: 'owner', attributes: ['id', 'username', 'email', 'phone', 'img']}]
       })
       res.send({
         places: places
@@ -33,7 +33,7 @@ module.exports = {
         where: {
           ownerId: result.id
         },
-        include: [{model: User, as: 'owner'}]
+        include: [{model: User, as: 'owner', attributes: ['id', 'username', 'email', 'phone', 'img']}]
       })
       res.send({
         places: places
@@ -50,7 +50,7 @@ module.exports = {
         where: {
           id: req.body.id
         },
-        include: [{model: User, as: 'owner'}]
+        include: [{model: User, as: 'owner', attributes: ['id', 'username', 'email', 'phone', 'img']}]
       })
       res.send(place.toJSON())
     } catch (err) {
@@ -172,7 +172,7 @@ module.exports = {
         where: {
           id: req.body.id
         },
-        include: [{model: User, as: 'owner'}]
+        include: [{model: User, as: 'owner', attributes: ['id', 'username', 'email', 'phone', 'img']}]
       })
       place = place.toJSON()
       var editflag = false

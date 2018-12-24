@@ -8,7 +8,7 @@ yarn-error.log*
 /test/e2e/reports/
 selenium-debug.log
 
-public/images/postImage/*.jpg
+public/images/*/*.jpg
 
 # Editor directories and files
 .idea

@@ -2,6 +2,8 @@ const Joi = require('joi')
 
 module.exports = {
   register (req, res, next) {
+    console.log(req.body)
+    console.log(req.file)
     const schema = {
       username: Joi.string(),
       email: Joi.string().email(),
@@ -14,6 +16,7 @@ module.exports = {
     const {error} = Joi.validate(req.body, schema)
 
     if (error) {
+      console.log(error)
       switch (error.details[0].context.key) {
         case 'username':
           res.status(400).send({
