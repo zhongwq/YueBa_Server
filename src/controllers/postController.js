@@ -29,7 +29,7 @@ module.exports = {
   },
   async addPost (req, res) {
     try {
-      const token = req.headers['Authorization']
+      const token = req.header('Authorization')
       const result = jwt.verify(token, config.authServiceToken.secretKey)
       if (!result) {
         return res.status(400).send({
@@ -62,7 +62,7 @@ module.exports = {
   },
   async deletePost (req, res) {
     try {
-      const token = req.headers['Authorization']
+      const token = req.header('Authorization')
       const result = jwt.verify(token, config.authServiceToken.secretKey)
       if (!result) {
         return res.status(400).send({

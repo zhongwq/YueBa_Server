@@ -23,47 +23,43 @@ module.exports = (app) => {
   /***
    * Place Part
    */
-  app.get('/getAllValidPlaces',
+  app.get('/places/valid',
     placeController.getAllPlaces)
-  app.post('/addPlace',
+  app.post('/places',
     uploader.placeImg.single('image'),
     placeController.addPlace)
-  app.post('/updatePlace',
+  app.put('/places/:id',
     uploader.placeImg.single('image'),
     placeController.updatePlace)
-  app.post('/deletePlace',
+  app.delete('/places/:id',
     placeController.deletePlace)
-  app.post('/getAllOwnedPlace',
+  app.get('/places/user/:id',
     placeController.getOwnedPlace)
-  app.post('/getDetailPlace',
+  app.get('/place/:id',
     placeController.getDetil)
-  app.post('/getSinglePlace',
-    placeController.getSinglePlace)
   /***
    * Event Part
    */
-  app.post('/addEvent',
+  app.get('/events',
+    eventController.getAllEvents)
+  app.post('/events',
     uploader.eventImg.single('image'),
     eventController.addEvent)
-  app.post('/updateEvent',
+  app.put('/event/:id',
     uploader.eventImg.single('image'),
     eventController.updateEvent)
-  app.post('/deleteEvent',
-    eventController.deleteEvent)
-  app.get('/getAllEvents',
-    eventController.getAllEvents)
-  app.post('/getAllOwnedEvents',
-    eventController.getAllOwnedEvents)
-  app.post('/getParticipateEvents',
-    eventController.getAllEventsParticipatesIn)
-  app.post('/participate',
-    eventController.participateEvent)
-  app.post('/exitEvent',
-    eventController.exitEvent)
-  app.post('/getDetailEvent',
+  app.get('/event/:id',
     eventController.getDetail)
-  app.post('/getSingleEvent',
-    eventController.getSingleEvent)
+  app.delete('/event/:id',
+    eventController.deleteEvent)
+  app.get('/event/user/:id',
+    eventController.getAllOwnedEvents)
+  app.get('/event/participates',
+    eventController.getAllEventsParticipatesIn)
+  app.post('/event/participate',
+    eventController.participateEvent)
+  app.post('/event/exit',
+    eventController.exitEvent)
   /***
    * Post Part
    */

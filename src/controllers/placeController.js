@@ -22,7 +22,7 @@ module.exports = {
   },
   async getOwnedPlace (req, res) {
     try {
-      const token = req.headers['Authorization']
+      const token = req.header('Authorization')
       const result = jwt.verify(token, config.authServiceToken.secretKey)
       if (!result) {
         return res.status(400).send({
@@ -40,28 +40,13 @@ module.exports = {
       })
     } catch (err) {
       res.status(400).send({
-        error: 'Some wrong occoured when getting data!'
-      })
-    }
-  },
-  async getSinglePlace (req, res) {
-    try {
-      var place = await Place.findOne({
-        where: {
-          id: req.body.id
-        },
-        include: [{model: User, as: 'owner', attributes: ['id', 'username', 'email', 'phone', 'img']}]
-      })
-      res.send(place.toJSON())
-    } catch (err) {
-      res.status(400).send({
-        error: 'Some wrong occoured when getting data!'
+        error: 'Token should be given, Please check your login state!'
       })
     }
   },
   async addPlace (req, res) {
     try {
-      const token = req.headers['Authorization']
+      const token = req.header('Authorization')
       const result = jwt.verify(token, config.authServiceToken.secretKey)
       if (!result) {
         return res.status(400).send({
@@ -82,15 +67,14 @@ module.exports = {
         place: place.toJSON()
       })
     } catch (err) {
-      console.log(err.fields[0])
       res.status(400).send({
-        error: err.fields[0] + ' has been used!'
+        error: 'The ' + err.fields[0] + ' has been used!'
       })
     }
   },
   async updatePlace (req, res) {
     try {
-      const token = req.headers['Authorization']
+      const token = req.header('Authorization')
       const result = jwt.verify(token, config.authServiceToken.secretKey)
       if (!result) {
         return res.status(400).send({
@@ -99,7 +83,7 @@ module.exports = {
       }
       var place = await Place.findOne({
         where: {
-          id: req.body.id,
+          id: req.params.id,
           ownerId: result.id
         }
       })
@@ -120,13 +104,13 @@ module.exports = {
       })
     } catch (err) {
       res.status(400).send({
-        error: 'Some wrong occoured when getting data!'
+        error: 'The ' + err.fields[0] + ' has been used!'
       })
     }
   },
   async deletePlace (req, res) {
     try {
-      const token = req.headers['Authorization']
+      const token = req.header('Authorization')
       const result = jwt.verify(token, config.authServiceToken.secretKey)
       if (!result) {
         return res.status(400).send({
@@ -135,7 +119,7 @@ module.exports = {
       }
       var place = await Place.findOne({
         where: {
-          id: req.body.id,
+          id: req.params.id,
           ownerId: result.id
         }
       })
@@ -161,7 +145,7 @@ module.exports = {
   },
   async getDetil (req, res) {
     try {
-      const token = req.headers['Authorization']
+      const token = req.header('Authorization')
       const result = jwt.verify(token, config.authServiceToken.secretKey)
       if (!result) {
         return res.status(400).send({
@@ -170,7 +154,7 @@ module.exports = {
       }
       var place = await Place.findOne({
         where: {
-          id: req.body.id
+          id: req.params.id
         },
         include: [{model: User, as: 'owner', attributes: ['id', 'username', 'email', 'phone', 'img']}]
       })
@@ -191,10 +175,9 @@ module.exports = {
       place.editFlag = editflag
 
       res.send({
-        detail: place
+        place: place
       })
     } catch (err) {
-      console.log(err.message)
       res.status(400).send({
         error: 'Some error occured when deleting event!'
       })

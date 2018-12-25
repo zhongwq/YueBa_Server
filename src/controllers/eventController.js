@@ -5,7 +5,7 @@ const config = require('../config/config')
 module.exports = {
   async addEvent (req, res) {
     try {
-      const token = req.headers['Authorization']
+      const token = req.header('Authorization')
       const result = jwt.verify(token, config.authServiceToken.secretKey)
       if (!result) {
         return res.status(400).send({
@@ -59,23 +59,8 @@ module.exports = {
       })
     }
   },
-  async getSingleEvent (req, res) {
-    try {
-      var event = await Event.findOne({
-        where: {
-          id: req.body.id
-        },
-        include: [{model: User, as: 'organizer', attributes: ['id', 'username', 'email', 'phone', 'img']}, {model: Place, as: 'place'}]
-      })
-      res.send(event.toJSON())
-    } catch (err) {
-      res.status(400).send({
-        error: 'Some wrong occoured when getting data!'
-      })
-    }
-  },
   async deleteEvent (req, res) {
-    const token = req.headers['Authorization']
+    const token = req.header('Authorization')
     const result = jwt.verify(token, config.authServiceToken.secretKey)
     if (!result) {
       return res.status(400).send({
@@ -84,7 +69,7 @@ module.exports = {
     }
     var event = await Event.findOne({
       where: {
-        id: req.body.id,
+        id: req.params.id,
         organizerId: result.id
       },
       include: [{ model: Place, as: 'place' }]
@@ -100,10 +85,10 @@ module.exports = {
   async updateEvent (req, res) {
     try {
       const event = await Event.findOne({
-        where: {id: req.body.id},
+        where: {id: req.params.id},
         include: [{model: User, as: 'organizer'}, {model: Place, as: 'place'}]
       })
-      const token = req.headers['Authorization']
+      const token = req.header('Authorization')
       const result = jwt.verify(token, config.authServiceToken.secretKey)
       if (!result) {
         return res.status(400).send({
@@ -171,7 +156,7 @@ module.exports = {
   },
   async getAllOwnedEvents (req, res) {
     try {
-      const token = req.headers['Authorization']
+      const token = req.header('Authorization')
       const result = jwt.verify(token, config.authServiceToken.secretKey)
       if (!result) {
         return res.status(400).send({
@@ -202,7 +187,7 @@ module.exports = {
   },
   async getAllEventsParticipatesIn (req, res) {
     try {
-      const token = req.headers['Authorization']
+      const token = req.header('Authorization')
       const result = jwt.verify(token, config.authServiceToken.secretKey)
       if (!result) {
         return res.status(400).send({
@@ -241,7 +226,7 @@ module.exports = {
   },
   async participateEvent (req, res) {
     try {
-      const token = req.headers['Authorization']
+      const token = req.header('Authorization')
       const result = jwt.verify(token, config.authServiceToken.secretKey)
       if (!result) {
         return res.status(400).send({
@@ -279,7 +264,7 @@ module.exports = {
   },
   async exitEvent (req, res) {
     try {
-      const token = req.headers['Authorization']
+      const token = req.header('Authorization')
       const result = jwt.verify(token, config.authServiceToken.secretKey)
       if (!result) {
         return res.status(400).send({
@@ -305,7 +290,7 @@ module.exports = {
   },
   async getDetail (req, res) {
     try {
-      const token = req.headers['Authorization']
+      const token = req.header('Authorization')
       const result = jwt.verify(token, config.authServiceToken.secretKey)
       if (!result) {
         return res.status(400).send({
@@ -314,7 +299,7 @@ module.exports = {
       }
       var event = await Event.findOne({
         where: {
-          id: req.body.id
+          id: req.params.id
         },
         include: [{model: User, as: 'organizer', attributes: ['id', 'username', 'email', 'phone', 'img']}, {model: Place, as: 'place'}]
       })
@@ -351,7 +336,7 @@ module.exports = {
       event.flag = flag
       event.editFlag = editFlag
       res.send({
-        detail: event
+        event: event
       })
     } catch (err) {
       console.log(err.message)
