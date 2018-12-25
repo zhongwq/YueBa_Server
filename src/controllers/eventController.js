@@ -6,6 +6,11 @@ module.exports = {
   async addEvent (req, res) {
     try {
       const token = req.header('Authorization')
+      if (!token) {
+        return res.status(400).send({
+          error: 'token should be given!'
+        })
+      }
       const result = jwt.verify(token, config.authServiceToken.secretKey)
       if (!result) {
         return res.status(400).send({
@@ -61,6 +66,11 @@ module.exports = {
   },
   async deleteEvent (req, res) {
     const token = req.header('Authorization')
+    if (!token) {
+      return res.status(400).send({
+        error: 'token should be given!'
+      })
+    }
     const result = jwt.verify(token, config.authServiceToken.secretKey)
     if (!result) {
       return res.status(400).send({
@@ -89,6 +99,11 @@ module.exports = {
         include: [{model: User, as: 'organizer'}, {model: Place, as: 'place'}]
       })
       const token = req.header('Authorization')
+      if (!token) {
+        return res.status(400).send({
+          error: 'token should be given!'
+        })
+      }
       const result = jwt.verify(token, config.authServiceToken.secretKey)
       if (!result) {
         return res.status(400).send({
@@ -157,6 +172,11 @@ module.exports = {
   async getAllOwnedEvents (req, res) {
     try {
       const token = req.header('Authorization')
+      if (!token) {
+        return res.status(400).send({
+          error: 'token should be given!'
+        })
+      }
       const result = jwt.verify(token, config.authServiceToken.secretKey)
       if (!result) {
         return res.status(400).send({
@@ -188,6 +208,11 @@ module.exports = {
   async getAllEventsParticipatesIn (req, res) {
     try {
       const token = req.header('Authorization')
+      if (!token) {
+        return res.status(400).send({
+          error: 'token should be given!'
+        })
+      }
       const result = jwt.verify(token, config.authServiceToken.secretKey)
       if (!result) {
         return res.status(400).send({
@@ -227,6 +252,11 @@ module.exports = {
   async participateEvent (req, res) {
     try {
       const token = req.header('Authorization')
+      if (!token) {
+        return res.status(400).send({
+          error: 'token should be given!'
+        })
+      }
       const result = jwt.verify(token, config.authServiceToken.secretKey)
       if (!result) {
         return res.status(400).send({
@@ -265,6 +295,11 @@ module.exports = {
   async exitEvent (req, res) {
     try {
       const token = req.header('Authorization')
+      if (!token) {
+        return res.status(400).send({
+          error: 'token should be given!'
+        })
+      }
       const result = jwt.verify(token, config.authServiceToken.secretKey)
       if (!result) {
         return res.status(400).send({
@@ -291,6 +326,11 @@ module.exports = {
   async getDetail (req, res) {
     try {
       const token = req.header('Authorization')
+      if (!token) {
+        return res.status(400).send({
+          error: 'token should be given!'
+        })
+      }
       const result = jwt.verify(token, config.authServiceToken.secretKey)
       if (!result) {
         return res.status(400).send({

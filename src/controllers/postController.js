@@ -30,6 +30,11 @@ module.exports = {
   async addPost (req, res) {
     try {
       const token = req.header('Authorization')
+      if (!token) {
+        return res.status(400).send({
+          error: 'token should be given!'
+        })
+      }
       const result = jwt.verify(token, config.authServiceToken.secretKey)
       if (!result) {
         return res.status(400).send({

@@ -2,8 +2,6 @@ const Joi = require('joi')
 
 module.exports = {
   register (req, res, next) {
-    console.log(req.body)
-    console.log(req.file)
     const schema = {
       username: Joi.string(),
       email: Joi.string().email(),

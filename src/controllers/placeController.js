@@ -23,6 +23,11 @@ module.exports = {
   async getOwnedPlace (req, res) {
     try {
       const token = req.header('Authorization')
+      if (!token) {
+        return res.status(400).send({
+          error: 'token should be given!'
+        })
+      }
       const result = jwt.verify(token, config.authServiceToken.secretKey)
       if (!result) {
         return res.status(400).send({
@@ -47,6 +52,11 @@ module.exports = {
   async addPlace (req, res) {
     try {
       const token = req.header('Authorization')
+      if (!token) {
+        return res.status(400).send({
+          error: 'token should be given!'
+        })
+      }
       const result = jwt.verify(token, config.authServiceToken.secretKey)
       if (!result) {
         return res.status(400).send({
@@ -67,6 +77,7 @@ module.exports = {
         place: place.toJSON()
       })
     } catch (err) {
+      console.log(err)
       res.status(400).send({
         error: 'The ' + err.fields[0] + ' has been used!'
       })
@@ -75,6 +86,11 @@ module.exports = {
   async updatePlace (req, res) {
     try {
       const token = req.header('Authorization')
+      if (!token) {
+        return res.status(400).send({
+          error: 'token should be given!'
+        })
+      }
       const result = jwt.verify(token, config.authServiceToken.secretKey)
       if (!result) {
         return res.status(400).send({
@@ -111,6 +127,11 @@ module.exports = {
   async deletePlace (req, res) {
     try {
       const token = req.header('Authorization')
+      if (!token) {
+        return res.status(400).send({
+          error: 'token should be given!'
+        })
+      }
       const result = jwt.verify(token, config.authServiceToken.secretKey)
       if (!result) {
         return res.status(400).send({
@@ -146,6 +167,11 @@ module.exports = {
   async getDetil (req, res) {
     try {
       const token = req.header('Authorization')
+      if (!token) {
+        return res.status(400).send({
+          error: 'token should be given!'
+        })
+      }
       const result = jwt.verify(token, config.authServiceToken.secretKey)
       if (!result) {
         return res.status(400).send({
