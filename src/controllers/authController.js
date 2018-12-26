@@ -104,13 +104,22 @@ module.exports = {
           error: "Can't find the user!"
         })
       }
-      user.update({
-        username: req.body.username,
-        email: req.body.email,
-        password: req.body.password,
-        phone: req.body.phone,
-        img: (req.file) ? req.file.path : user.img
-      })
+      if (req.body.password) {
+        user.update({
+          username: req.body.username,
+          email: req.body.email,
+          password: req.body.password,
+          phone: req.body.phone,
+          img: (req.file) ? req.file.path : user.img
+        })
+      } else {
+        user.update({
+          username: req.body.username,
+          email: req.body.email,
+          phone: req.body.phone,
+          img: (req.file) ? req.file.path : user.img
+        })
+      }
       const userJson = user.toJSON()
       var tmpData = user.dataValues
       delete tmpData.password
