@@ -60,7 +60,7 @@ module.exports = {
     } catch (err) {
       console.log(err)
       res.status(400).send({
-        error: 'The ' + err.errors[0].path + ' is in use!'
+        error: err.errors[0].message
       })
     }
   },

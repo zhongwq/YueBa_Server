@@ -20,6 +20,26 @@ module.exports = {
       })
     }
   },
+  async getHintPlaces (req, res) {
+    try {
+      var places = await Place.findAll({
+        where: {
+          available: true,
+          name: {
+            $like: '%' + req.params.text + '%'
+          }
+        },
+        include: [{model: User, as: 'owner', attributes: ['id', 'username', 'email', 'phone', 'img']}]
+      })
+      res.send({
+        places: places
+      })
+    } catch (err) {
+      res.status(400).send({
+        error: 'Some wrong occoured when getting data!'
+      })
+    }
+  },
   async getOwnedPlace (req, res) {
     try {
       const token = req.header('Authorization')
@@ -64,7 +84,7 @@ module.exports = {
         })
       }
       const imgDefault = 'public/images/placeImage/Place.jpg'
-      var place = await Place.create({
+      await Place.create({
         name: req.body.name,
         address: req.body.address,
         detail: req.body.detail,
@@ -73,13 +93,21 @@ module.exports = {
         img: (req.file) ? req.file.path : imgDefault
       })
 
+      var place = await Place.findOne({
+        where: {
+          available: true,
+          name: req.body.name
+        },
+        include: [{model: User, as: 'owner', attributes: ['id', 'username', 'email', 'phone', 'img']}]
+      })
+
       res.send({
         place: place.toJSON()
       })
     } catch (err) {
       console.log(err)
       res.status(400).send({
-        error: 'The ' + err.fields[0] + ' has been used!'
+        error: err.fields !== undefined ? 'The ' + err.fields[0] + ' has been used!' : 'Error input please check your input'
       })
     }
   },

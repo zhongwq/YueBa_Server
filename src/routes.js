@@ -25,6 +25,8 @@ module.exports = (app) => {
    */
   app.get('/places/valid',
     placeController.getAllPlaces)
+  app.get('/places/valid/hint/:text',
+    placeController.getHintPlaces)
   app.post('/places',
     uploader.placeImg.single('image'),
     placeController.addPlace)
