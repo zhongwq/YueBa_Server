@@ -2,6 +2,41 @@ const { User, Event, Place, Participation } = require('../models')
 const jwt = require('jsonwebtoken')
 const config = require('../config/config')
 
+function top (arr, comp) {
+  if (arr.length === 0) {
+    return
+  }
+  var i = arr.length / 2 | 0
+  for (; i >= 0; i--) {
+    if (comp(arr[i], arr[i * 2])) {
+      exch(arr, i, i * 2)
+    }
+    if (comp(arr[i], arr[i * 2 + 1])) {
+      exch(arr, i, i * 2 + 1)
+    }
+  }
+  return arr[0]
+}
+
+function exch (arr, i, j) {
+  var t = arr[i]
+  arr[i] = arr[j]
+  arr[j] = t
+}
+
+function topK (arr, n, comp) {
+  if (!arr || arr.length === 0 || n <= 0 || n > arr.length) {
+    return -1
+  }
+  var ret = []
+  for (var i = 0; i < n; i++) {
+    var max = top(arr, comp)
+    ret.push(max)
+    arr.splice(0, 1)
+  }
+  return ret
+}
+
 module.exports = {
   async addEvent (req, res) {
     try {
@@ -169,6 +204,33 @@ module.exports = {
       })
     }
   },
+  async getHotEvents (req, res) {
+    try {
+      var events = await Event.findAll({
+        include: [{model: User, as: 'organizer', attributes: ['id', 'username', 'email', 'phone', 'img']}, {model: Place, as: 'place'}]
+      }).map(async (event) => {
+        var count = await Participation.findAll({
+          where: {
+            EventId: event.id
+          }
+        })
+        event = event.toJSON()
+        event.participantsNum = (count.length === undefined) ? 0 : count.length
+        return event
+      })
+      const result = topK(events, (events.length > 10) ? 5 : events.length, function (a, b) {
+        if (!b) {
+          return false
+        }
+        return a.participantsNum < b.participantsNum
+      })
+      res.send({result: result})
+    } catch (err) {
+      res.status(400).send({
+        error: 'Some wrong occured when getting data!'
+      })
+    }
+  },
   async getAllOwnedEvents (req, res) {
     try {
       const token = req.header('Authorization')
@@ -326,16 +388,9 @@ module.exports = {
   async getDetail (req, res) {
     try {
       const token = req.header('Authorization')
-      if (!token) {
-        return res.status(400).send({
-          error: 'token should be given!'
-        })
-      }
-      const result = jwt.verify(token, config.authServiceToken.secretKey)
-      if (!result) {
-        return res.status(400).send({
-          error: 'The token is not valid! Please sign in and try again!'
-        })
+      var result
+      if (token) {
+        result = jwt.verify(token, config.authServiceToken.secretKey)
       }
       var event = await Event.findOne({
         where: {
@@ -362,14 +417,16 @@ module.exports = {
       event.participators = participators
       var flag = false
       var editFlag = false
-      if (event.organizerId === result.id) {
-        flag = true
-        editFlag = true
-      } else {
-        for (var i = 0; i < participators.length; i++) {
-          if (participators[i].id === result.id) {
-            flag = true
-            break
+      if (result) {
+        if (event.organizerId === result.id) {
+          flag = true
+          editFlag = true
+        } else {
+          for (var i = 0; i < participators.length; i++) {
+            if (participators[i].id === result.id) {
+              flag = true
+              break
+            }
           }
         }
       }

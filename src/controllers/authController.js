@@ -83,5 +83,45 @@ module.exports = {
         error: 'Somthing wrong with the server!'
       })
     }
+  },
+  async updateUser (req, res) {
+    try {
+      const token = req.header('Authorization')
+      if (!token) {
+        return res.status(400).send({
+          error: 'token should be given!'
+        })
+      }
+      const result = jwt.verify(token, config.authServiceToken.secretKey)
+      if (!result) {
+        return res.status(400).send({
+          error: 'The token is not valid! Please sign in and try again!'
+        })
+      }
+      var user = await User.findOne({ where: {id: result.id} })
+      if (!user) {
+        return res.status(400).send({
+          error: "Can't find the user!"
+        })
+      }
+      user.update({
+        username: req.body.username,
+        email: req.body.email,
+        password: req.body.password,
+        phone: req.body.phone,
+        img: (req.file) ? req.file.path : user.img
+      })
+      const userJson = user.toJSON()
+      var tmpData = user.dataValues
+      delete tmpData.password
+      res.send({
+        user: tmpData,
+        token: jwtSignUser(userJson)
+      })
+    } catch (err) {
+      res.status(400).send({
+        error: 'Somthing when update icon!'
+      })
+    }
   }
 }

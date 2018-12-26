@@ -195,16 +195,9 @@ module.exports = {
   async getDetil (req, res) {
     try {
       const token = req.header('Authorization')
-      if (!token) {
-        return res.status(400).send({
-          error: 'token should be given!'
-        })
-      }
-      const result = jwt.verify(token, config.authServiceToken.secretKey)
-      if (!result) {
-        return res.status(400).send({
-          error: 'The token is not valid! Please sign in and try again!'
-        })
+      var result
+      if (token) {
+        result = jwt.verify(token, config.authServiceToken.secretKey)
       }
       var place = await Place.findOne({
         where: {
@@ -214,17 +207,19 @@ module.exports = {
       })
       place = place.toJSON()
       var editflag = false
-      if (place.ownerId === result.id) {
-        editflag = true
-      }
-      if (place.available === false) {
-        var event = await Event.findOne({
-          where: {
-            placeId: place.id
-          }
-        })
-        event = event.toJSON()
-        place.eventItem = event
+      if (result) {
+        if (place.ownerId === result.id) {
+          editflag = true
+        }
+        if (place.available === false) {
+          var event = await Event.findOne({
+            where: {
+              placeId: place.id
+            }
+          })
+          event = event.toJSON()
+          place.eventItem = event
+        }
       }
       place.editFlag = editflag
 
