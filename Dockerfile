@@ -1,7 +1,7 @@
 #制定node镜像的版本
 FROM node:8.9-alpine
 #声明作者
-MAINTAINER robin
+MAINTAINER WilsonZhong
 #移动当前目录下面的文件到app目录下
 ADD . /app/
 #进入到app目录下面，类似cd
