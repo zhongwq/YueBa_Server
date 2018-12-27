@@ -403,13 +403,14 @@ module.exports = {
 
       var participators = await Participation.findAll({
         where: {
-          EventId: req.body.id
+          EventId: req.params.id
         }
       }).map(async (participant) => {
         var user = await User.findOne({
           where: {
             id: participant.UserId
-          }
+          },
+          attributes: ['id', 'username', 'email', 'phone', 'img']
         })
         return user.toJSON()
       })
