@@ -3,8 +3,16 @@ services:
   server:
     image: wilsonzhong/yueba_server:latest
     container_name: yueba_server
+    environment:
+      HOST: 172.17.0.1
     ports:
       - 8080:8080
+  database:
+    image: wilsonzhong/yueba_mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: YueBa
+    container_name: yueba_mysql
+    ports:
+      - 3306:3306
     volumes:
-      - ~/data/public:/app/public
-      - ~/data/YueBa.sqlite:/app/YueBa.sqlite
+      - ~/mysql:/var/lib/mysql

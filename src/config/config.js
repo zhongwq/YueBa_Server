@@ -5,9 +5,9 @@ module.exports = {
     user: process.env.DB_USER || 'YueBa',
     password: process.env.DB_PASSWD || 'YueBa',
     options: {
-      dialect: process.env.DIALECT || 'sqlite',
+      dialect: process.env.DIALECT || 'mysql',
       host: process.env.HOST || 'localhost',
-      storage: './YueBa.sqlite'
+      port: process.env.PORT || '3306'
     }
   },
   authServiceToken: {
