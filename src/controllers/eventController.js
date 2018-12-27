@@ -130,8 +130,8 @@ module.exports = {
   async updateEvent (req, res) {
     try {
       const event = await Event.findOne({
-        where: {id: req.params.id},
-        include: [{model: User, as: 'organizer'}, {model: Place, as: 'place'}]
+        where: { id: req.params.id },
+        include: [{ model: User, as: 'organizer' }, { model: Place, as: 'place' }]
       })
       const token = req.header('Authorization')
       if (!token) {
@@ -185,7 +185,7 @@ module.exports = {
   async getAllEvents (req, res) {
     try {
       var events = await Event.findAll({
-        include: [{model: User, as: 'organizer', attributes: ['id', 'username', 'email', 'phone', 'img']}, {model: Place, as: 'place'}]
+        include: [{ model: User, as: 'organizer', attributes: ['id', 'username', 'email', 'phone', 'img'] }, { model: Place, as: 'place' }]
       }).map(async (event) => {
         var count = await Participation.findAll({
           where: {
@@ -196,7 +196,7 @@ module.exports = {
         event.participantsNum = (count.length === undefined) ? 0 : count.length
         return event
       })
-      res.send({events: events})
+      res.send({ events: events })
     } catch (err) {
       console.log(err.message)
       res.status(400).send({
@@ -207,7 +207,7 @@ module.exports = {
   async getHotEvents (req, res) {
     try {
       var events = await Event.findAll({
-        include: [{model: User, as: 'organizer', attributes: ['id', 'username', 'email', 'phone', 'img']}, {model: Place, as: 'place'}]
+        include: [{ model: User, as: 'organizer', attributes: ['id', 'username', 'email', 'phone', 'img'] }, { model: Place, as: 'place' }]
       }).map(async (event) => {
         var count = await Participation.findAll({
           where: {
@@ -224,7 +224,7 @@ module.exports = {
         }
         return a.participantsNum < b.participantsNum
       })
-      res.send({result: result})
+      res.send({ result: result })
     } catch (err) {
       res.status(400).send({
         error: 'Some wrong occured when getting data!'
@@ -249,7 +249,7 @@ module.exports = {
         where: {
           organizerId: result.id
         },
-        include: [{model: User, as: 'organizer', attributes: ['id', 'username', 'email', 'phone', 'img']}, {model: Place, as: 'place'}]
+        include: [{ model: User, as: 'organizer', attributes: ['id', 'username', 'email', 'phone', 'img'] }, { model: Place, as: 'place' }]
       }).map(async (event) => {
         var count = await Participation.findAll({
           where: {
@@ -260,7 +260,7 @@ module.exports = {
         event.participantsNum = (count.length === undefined) ? 0 : count.length
         return event
       })
-      res.send({events: events})
+      res.send({ events: events })
     } catch (err) {
       res.status(400).send({
         error: 'Some wrong occured when getting data!'
@@ -290,7 +290,7 @@ module.exports = {
           where: {
             id: participant.EventId
           },
-          include: [{model: User, as: 'organizer', attributes: ['id', 'username', 'email', 'phone', 'img']}, {model: Place, as: 'place'}]
+          include: [{ model: User, as: 'organizer', attributes: ['id', 'username', 'email', 'phone', 'img'] }, { model: Place, as: 'place' }]
         })
         var count = await Participation.findAll({
           where: {
@@ -396,7 +396,7 @@ module.exports = {
         where: {
           id: req.params.id
         },
-        include: [{model: User, as: 'organizer', attributes: ['id', 'username', 'email', 'phone', 'img']}, {model: Place, as: 'place'}]
+        include: [{ model: User, as: 'organizer', attributes: ['id', 'username', 'email', 'phone', 'img'] }, { model: Place, as: 'place' }]
       })
 
       event = event.toJSON()

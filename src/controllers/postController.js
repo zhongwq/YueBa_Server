@@ -1,7 +1,7 @@
 /**
  * Created by zhongwq on 2018/12/17.
  */
-const {Post, User} = require('../models')
+const { Post, User } = require('../models')
 const jwt = require('jsonwebtoken')
 const config = require('../config/config')
 
@@ -9,7 +9,7 @@ module.exports = {
   async getAllPosts (req, res) {
     try {
       var posts = await Post.findAll({
-        include: [{model: User, as: 'author', attributes: ['id', 'username', 'email', 'phone', 'img']}]
+        include: [{ model: User, as: 'author', attributes: ['id', 'username', 'email', 'phone', 'img'] }]
       })
       for (var post of posts) {
         if (post.img !== '') {

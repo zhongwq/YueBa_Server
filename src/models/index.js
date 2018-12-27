@@ -8,6 +8,19 @@ const sequelize = new Sequelize(
   config.db.options
 )
 
+var flag = false
+
+while (flag === false) {
+  console.log('Connecting to database...')
+  sequelize.authenticate()
+    .then(() => {
+      flag = true
+      console.log('Connection has been established successfully.')
+    }).catch(err => {
+      console.error('Unable to connect to the database:', err)
+    })
+}
+
 var User = sequelize.import('./User.js')
 var Place = sequelize.import('./Place.js')
 var Event = sequelize.import('./Event.js')

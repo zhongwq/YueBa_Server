@@ -1,4 +1,4 @@
-const {Place, User, Event} = require('../models')
+const { Place, User, Event } = require('../models')
 const jwt = require('jsonwebtoken')
 const config = require('../config/config')
 
@@ -9,7 +9,7 @@ module.exports = {
         where: {
           available: true
         },
-        include: [{model: User, as: 'owner', attributes: ['id', 'username', 'email', 'phone', 'img']}]
+        include: [{ model: User, as: 'owner', attributes: ['id', 'username', 'email', 'phone', 'img'] }]
       })
       res.send({
         places: places
@@ -29,7 +29,7 @@ module.exports = {
             $like: '%' + req.params.text + '%'
           }
         },
-        include: [{model: User, as: 'owner', attributes: ['id', 'username', 'email', 'phone', 'img']}]
+        include: [{ model: User, as: 'owner', attributes: ['id', 'username', 'email', 'phone', 'img'] }]
       })
       res.send({
         places: places
@@ -58,7 +58,7 @@ module.exports = {
         where: {
           ownerId: result.id
         },
-        include: [{model: User, as: 'owner', attributes: ['id', 'username', 'email', 'phone', 'img']}]
+        include: [{ model: User, as: 'owner', attributes: ['id', 'username', 'email', 'phone', 'img'] }]
       })
       res.send({
         places: places
@@ -98,7 +98,7 @@ module.exports = {
           available: true,
           name: req.body.name
         },
-        include: [{model: User, as: 'owner', attributes: ['id', 'username', 'email', 'phone', 'img']}]
+        include: [{ model: User, as: 'owner', attributes: ['id', 'username', 'email', 'phone', 'img'] }]
       })
 
       res.send({
@@ -203,7 +203,7 @@ module.exports = {
         where: {
           id: req.params.id
         },
-        include: [{model: User, as: 'owner', attributes: ['id', 'username', 'email', 'phone', 'img']}]
+        include: [{ model: User, as: 'owner', attributes: ['id', 'username', 'email', 'phone', 'img'] }]
       })
       place = place.toJSON()
       var editflag = false

@@ -1,4 +1,4 @@
-const {User, Sequelize} = require('../models')
+const { User, Sequelize } = require('../models')
 const jwt = require('jsonwebtoken')
 const config = require('../config/config')
 
@@ -36,8 +36,8 @@ module.exports = {
   },
   async login (req, res) {
     try {
-      const {account, password} = req.body
-      var user = await User.findOne({ where: {[Sequelize.Op.or]: [{email: account}, {username: account}]} })
+      const { account, password } = req.body
+      var user = await User.findOne({ where: { [Sequelize.Op.or]: [{ email: account }, { username: account }] } })
 
       if (!user) {
         return res.status(400).send({
@@ -69,7 +69,7 @@ module.exports = {
   },
   async getIcon (req, res) {
     try {
-      var user = await User.findOne({ where: {username: req.params.username} })
+      var user = await User.findOne({ where: { username: req.params.username } })
       if (!user) {
         return res.status(400).send({
           error: "Can't find the user!"
@@ -98,7 +98,7 @@ module.exports = {
           error: 'The token is not valid! Please sign in and try again!'
         })
       }
-      var user = await User.findOne({ where: {id: result.id} })
+      var user = await User.findOne({ where: { id: result.id } })
       if (!user) {
         return res.status(400).send({
           error: "Can't find the user!"

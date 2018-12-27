@@ -5,6 +5,8 @@ services:
     container_name: yueba_server
     environment:
       HOST: 172.17.0.1
+    depends_on:
+      - "database"
     ports:
       - 8080:8080
   database:
