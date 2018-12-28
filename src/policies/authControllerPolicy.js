@@ -11,7 +11,7 @@ module.exports = {
       phone: Joi.string().length(11)
     }
 
-    const {error} = Joi.validate(req.body, schema)
+    const { error } = Joi.validate(req.body, schema)
 
     if (error) {
       console.log(error)

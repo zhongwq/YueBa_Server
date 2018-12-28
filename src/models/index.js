@@ -8,6 +8,8 @@ const sequelize = new Sequelize(
   config.db.options
 )
 
+console.log('Connecting to database', config.db.options.host, '...')
+
 var User = sequelize.import('./User.js')
 var Place = sequelize.import('./Place.js')
 var Event = sequelize.import('./Event.js')
