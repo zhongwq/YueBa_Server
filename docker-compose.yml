@@ -11,6 +11,8 @@ services:
       - mysql
     environment:
       WAIT_HOSTS: mysql:3306
+    volumes:
+      - ~/public:/app/public
   mysql:
     image: wilsonzhong/yueba_mysql:latest
     environment:
