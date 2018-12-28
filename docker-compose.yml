@@ -4,16 +4,19 @@ services:
     image: wilsonzhong/yueba_server:latest
     container_name: yueba_server
     environment:
-      HOST: 172.17.0.1
-    depends_on:
-      - "database"
+      HOST: mysql
     ports:
       - 8080:8080
-  database:
+    depends_on:
+      - database
+    environment:
+      WAIT_HOSTS: mysql:3306
+  mysql:
     image: wilsonzhong/yueba_mysql:latest
     environment:
       MYSQL_ROOT_PASSWORD: YueBa
-    container_name: yueba_mysql
+    container_name: mysql
+    hostname: mysql
     ports:
       - 3306:3306
     volumes:

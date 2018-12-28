@@ -6,7 +6,7 @@ module.exports = {
     password: process.env.DB_PASSWD || 'YueBa',
     options: {
       dialect: process.env.DIALECT || 'mysql',
-      host: process.env.HOST || '192.168.199.100',
+      host: process.env.HOST || 'mysql',
       port: process.env.PORT || '3306'
     }
   },
