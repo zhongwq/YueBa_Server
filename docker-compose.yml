@@ -1,7 +1,7 @@
 version: "3"
 services:
   server:
-    image: wilsonzhong/yueba_server:Mysql_Version
+    image: wilsonzhong/yueba_server:latest
     container_name: yueba_server
     environment:
       HOST: mysql
