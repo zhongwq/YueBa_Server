@@ -1,14 +1,14 @@
 version: "3"
 services:
   server:
-    image: wilsonzhong/yueba_server:latest
+    image: wilsonzhong/yueba_server:Mysql_Version
     container_name: yueba_server
     environment:
       HOST: mysql
     ports:
       - 8080:8080
     depends_on:
-      - database
+      - mysql
     environment:
       WAIT_HOSTS: mysql:3306
   mysql:
