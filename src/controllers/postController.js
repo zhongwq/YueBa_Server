@@ -60,7 +60,7 @@ module.exports = {
       })
     } catch (err) {
       res.status(400).send({
-        error: err.message
+        error: 'Add post failed, please check ' + err.errors[0].path
       })
     }
   },
