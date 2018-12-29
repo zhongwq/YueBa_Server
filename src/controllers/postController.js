@@ -64,7 +64,7 @@ module.exports = {
       }
       var post = await Post.create({
         content: req.body.content,
-        authorId: 1,
+        authorId: result.id,
         img: imgArr.join(',')
       })
       if (post.img !== '') {
