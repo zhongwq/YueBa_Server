@@ -59,8 +59,10 @@ module.exports = {
         })
       }
       var imgArr = []
-      for (var file of req.files) {
-        imgArr.push(file.path)
+      if (req.files) {
+        for (var file of req.files) {
+          imgArr.push(file.path)
+        }
       }
       var post = await Post.create({
         content: req.body.content,
@@ -76,6 +78,7 @@ module.exports = {
         post: post.toJSON()
       })
     } catch (err) {
+      console.log(err)
       res.status(400).send({
         error: 'Add post failed, please check ' + err.errors[0].path
       })
