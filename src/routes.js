@@ -68,11 +68,11 @@ module.exports = (app) => {
   /***
    * Post Part
    */
-  app.get('/getAllPosts',
+  app.get('/posts',
     postController.getAllPosts)
-  app.post('/addPost',
+  app.post('/posts',
     uploader.postImg.array('images', 9),
     postController.addPost)
-  app.post('/deletePost',
+  app.delete('/post/:id',
     postController.deletePost)
 }
