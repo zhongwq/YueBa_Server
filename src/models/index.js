@@ -30,6 +30,7 @@ module.exports = {
   Place: Place,
   Event: Event,
   Post: Post,
+  Favourite: Favourite,
   Participation: Participation,
   sequelize: sequelize,
   Sequelize: Sequelize

@@ -1,7 +1,7 @@
 /**
  * Created by zhongwq on 2018/12/17.
  */
-const { Post, User } = require('../models')
+const { Post, User, Favourite } = require('../models')
 const jwt = require('jsonwebtoken')
 const config = require('../config/config')
 
@@ -61,6 +61,53 @@ module.exports = {
     } catch (err) {
       res.status(400).send({
         error: 'Add post failed, please check ' + err.errors[0].path
+      })
+    }
+  },
+  async favouritePost (req, res) {
+    try {
+      const token = req.header('Authorization')
+      const result = jwt.verify(token, config.authServiceToken.secretKey)
+      if (!result) {
+        return res.status(400).send({
+          error: 'The token is not valid! Please sign in and try again!'
+        })
+      }
+      await Favourite.create({
+        UserId: result.id,
+        PostId: req.body.id
+      })
+      res.send({
+        info: 'Favourite success!'
+      })
+    } catch (err) {
+      res.status(400).send({
+        error: 'Error when favourite post'
+      })
+    }
+  },
+  async unfavouritePost (req, res) {
+    try {
+      const token = req.header('Authorization')
+      const result = jwt.verify(token, config.authServiceToken.secretKey)
+      if (!result) {
+        return res.status(400).send({
+          error: 'The token is not valid! Please sign in and try again!'
+        })
+      }
+      var favourite = await Favourite.findOne({
+        where: {
+          UserId: result.id,
+          PostId: req.body.id
+        }
+      })
+      await favourite.destroy()
+      res.send({
+        info: 'Unfavourite post successfully!'
+      })
+    } catch (err) {
+      res.status(400).send({
+        error: 'Error when favourite post'
       })
     }
   },

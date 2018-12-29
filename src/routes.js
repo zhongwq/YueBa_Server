@@ -73,6 +73,10 @@ module.exports = (app) => {
   app.post('/posts',
     uploader.postImg.array('images', 9),
     postController.addPost)
+  app.post('/post/favourite',
+    postController.favouritePost)
+  app.post('/post/unfavourite',
+    postController.unfavouritePost)
   app.delete('/post/:id',
     postController.deletePost)
 }
