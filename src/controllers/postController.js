@@ -10,18 +10,35 @@ module.exports = {
     try {
       var posts = await Post.findAll({
         include: [{ model: User, as: 'author', attributes: ['id', 'username', 'email', 'phone', 'img'] }]
-      })
-      for (var post of posts) {
+      }).map(async (post) => {
+        var favouriteUser = await Favourite.findAll({
+          where: {
+            PostId: post.id
+          }
+        }).map(async (favourite) => {
+          var user = await User.findOne({
+            where: {
+              id: favourite.UserId
+            },
+            attributes: ['id', 'username', 'email', 'phone', 'img']
+          })
+          return user
+        })
+        console.log(favouriteUser)
+        post = post.toJSON()
+        post.favourite = favouriteUser
         if (post.img !== '') {
           post.img = post.img.split(',')
         } else {
           post.img = []
         }
-      }
+        return post
+      })
       res.send({
         posts: posts
       })
     } catch (err) {
+      console.log(err)
       res.status(400).send({
         error: 'Some wrong occoured when getting data!'
       })
