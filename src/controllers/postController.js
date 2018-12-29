@@ -5,6 +5,30 @@ const { Post, User, Favourite } = require('../models')
 const jwt = require('jsonwebtoken')
 const config = require('../config/config')
 
+/* const minute = 60 * 1000
+const hour = 60 * minute
+const day = 24 * hour */
+
+function formatTime (time, fmt) {
+  time = new Date(time)
+  var o = {
+    'M+': time.getMonth() + 1, // 月份
+    'd+': time.getDate(), // 日
+    'h+': time.getHours(), // 小时
+    'm+': time.getMinutes(), // 分
+    's+': time.getSeconds() // 秒
+  }
+  if (/(y+)/.test(fmt)) {
+    fmt = fmt.replace(RegExp.$1, (time.getFullYear() + '').substr(4 - RegExp.$1.length))
+  }
+  for (var k in o) {
+    if (new RegExp('(' + k + ')').test(fmt)) {
+      fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? (o[k]) : (('00' + o[k]).substr(('' + o[k]).length)))
+    }
+  }
+  return fmt
+}
+
 module.exports = {
   async getAllPosts (req, res) {
     try {
@@ -24,8 +48,8 @@ module.exports = {
           })
           return user
         })
-        console.log(favouriteUser)
         post = post.toJSON()
+        post.createdAt = formatTime(post.createdAt, 'yyyy-MM-dd hh:mm')
         post.favourite = favouriteUser
         if (post.img !== '') {
           post.img = post.img.split(',')
@@ -143,7 +167,7 @@ module.exports = {
 
       var post = await Post.findOne({
         where: {
-          id: req.body.id,
+          id: req.params.id,
           authorId: result.id
         }
       })
@@ -158,7 +182,7 @@ module.exports = {
       })
     } catch (err) {
       res.status(400).send({
-        error: 'Error when add post'
+        error: 'Error when delete post'
       })
     }
   }
