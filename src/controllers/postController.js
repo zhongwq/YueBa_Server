@@ -11,6 +11,7 @@ const day = 24 * hour */
 
 function formatTime (time, fmt) {
   time = new Date(time)
+  time = new Date(time.getTime() + (new Date().getTimezoneOffset()) * 60 * 1000)
   var o = {
     'M+': time.getMonth() + 1, // 月份
     'd+': time.getDate(), // 日
