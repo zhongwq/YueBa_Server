@@ -59,9 +59,8 @@ module.exports = {
         post: post.toJSON()
       })
     } catch (err) {
-      console.log(err)
       res.status(400).send({
-        error: 'Error when add post'
+        error: err.message
       })
     }
   },
@@ -83,12 +82,12 @@ module.exports = {
       })
       if (!post) {
         res.status(400).send({
-          error: 'No place is found, please check your request!'
+          error: 'No post is found, please check your request!'
         })
       }
       await post.destroy()
       res.send({
-        info: 'Delete place successfully'
+        info: 'Delete post successfully'
       })
     } catch (err) {
       res.status(400).send({
