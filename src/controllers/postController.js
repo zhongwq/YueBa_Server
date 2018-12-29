@@ -99,8 +99,10 @@ module.exports = {
       } else {
         post.img = []
       }
+      post = post.toJSON()
+      post.createdAt = formatTime(post.createdAt, 'yyyy-MM-dd hh:mm')
       res.send({
-        post: post.toJSON()
+        post: post
       })
     } catch (err) {
       console.log(err)
