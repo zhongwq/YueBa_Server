@@ -20,6 +20,26 @@ module.exports = {
       })
     }
   },
+  async searchPlaces (req, res) {
+    try {
+      var places = await Place.findAll({
+        where: {
+          available: true,
+          name: {
+            $like: '%' + req.query.content + '%'
+          }
+        },
+        include: [{ model: User, as: 'owner', attributes: ['id', 'username', 'email', 'phone', 'img'] }]
+      })
+      res.send({
+        places: places
+      })
+    } catch (err) {
+      res.status(400).send({
+        error: 'Some wrong occoured when getting data!'
+      })
+    }
+  },
   async getHintPlaces (req, res) {
     try {
       var places = await Place.findAll({

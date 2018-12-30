@@ -205,6 +205,33 @@ module.exports = {
       })
     }
   },
+  async searchEvents (req, res) {
+    try {
+      var events = await Event.findAll({
+        order: [['startTime', 'DESC']],
+        where: {
+          name: {
+            $like: '%' + req.query.content + '%'
+          }
+        },
+        include: [{ model: User, as: 'owner', attributes: ['id', 'username', 'email', 'phone', 'img'] }]
+      }).map(async (event) => {
+        var count = await Participation.findAll({
+          where: {
+            EventId: event.id
+          }
+        })
+        event = event.toJSON()
+        event.participantsNum = (count.length === undefined) ? 0 : count.length
+        return event
+      })
+      res.send({ events: events })
+    } catch (err) {
+      res.status(400).send({
+        error: 'Some wrong occoured when getting data!'
+      })
+    }
+  },
   async getHotEvents (req, res) {
     try {
       var events = await Event.findAll({

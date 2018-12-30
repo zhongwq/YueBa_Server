@@ -28,6 +28,8 @@ module.exports = (app) => {
    */
   app.get('/places/valid',
     placeController.getAllPlaces)
+  app.get('/places/valid/search',
+    placeController.searchPlaces)
   app.get('/places/valid/hint/:text',
     placeController.getHintPlaces)
   app.post('/places',
@@ -47,6 +49,8 @@ module.exports = (app) => {
    */
   app.get('/events',
     eventController.getAllEvents)
+  app.get('/events/search',
+    eventController.searchEvents)
   app.post('/events',
     uploader.eventImg.single('image'),
     eventController.addEvent)
