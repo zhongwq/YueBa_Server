@@ -185,6 +185,7 @@ module.exports = {
   async getAllEvents (req, res) {
     try {
       var events = await Event.findAll({
+        order: [['startTime', 'DESC']],
         include: [{ model: User, as: 'organizer', attributes: ['id', 'username', 'email', 'phone', 'img'] }, { model: Place, as: 'place' }]
       }).map(async (event) => {
         var count = await Participation.findAll({

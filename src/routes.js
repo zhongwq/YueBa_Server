@@ -79,4 +79,10 @@ module.exports = (app) => {
     postController.unfavouritePost)
   app.delete('/post/:id',
     postController.deletePost)
+  app.get('/post/:id/comments',
+    postController.getComments)
+  app.post('/post/:id/comment',
+    postController.addComment)
+  app.delete('/post/comment/:commentId',
+    postController.deleteComment)
 }

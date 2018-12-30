@@ -1,41 +1,24 @@
 /**
  * Created by zhongwq on 2018/12/17.
  */
-const { Post, User, Favourite } = require('../models')
+const { formatTime } = require('../utils/timeUtils')
+const { Post, User, Favourite, Comment } = require('../models')
 const jwt = require('jsonwebtoken')
 const config = require('../config/config')
-
-/* const minute = 60 * 1000
-const hour = 60 * minute
-const day = 24 * hour */
-
-function formatTime (time, fmt) {
-  time = new Date(time)
-  time = new Date(time.getTime() + (new Date().getTimezoneOffset()) * 60 * 1000)
-  var o = {
-    'M+': time.getMonth() + 1, // 月份
-    'd+': time.getDate(), // 日
-    'h+': time.getHours(), // 小时
-    'm+': time.getMinutes(), // 分
-    's+': time.getSeconds() // 秒
-  }
-  if (/(y+)/.test(fmt)) {
-    fmt = fmt.replace(RegExp.$1, (time.getFullYear() + '').substr(4 - RegExp.$1.length))
-  }
-  for (var k in o) {
-    if (new RegExp('(' + k + ')').test(fmt)) {
-      fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? (o[k]) : (('00' + o[k]).substr(('' + o[k]).length)))
-    }
-  }
-  return fmt
-}
 
 module.exports = {
   async getAllPosts (req, res) {
     try {
       var posts = await Post.findAll({
+        order: [['createdAt', 'DESC']],
         include: [{ model: User, as: 'author', attributes: ['id', 'username', 'email', 'phone', 'img'] }]
       }).map(async (post) => {
+        var comments = await Comment.findAll({
+          where: {
+            postId: post.id
+          },
+          include: [{ model: User, as: 'author', attributes: ['id', 'username', 'email', 'phone', 'img'] }, { model: User, as: 'replyTo', attributes: ['id', 'username', 'email', 'phone', 'img'] }]
+        })
         var favouriteUser = await Favourite.findAll({
           where: {
             PostId: post.id
@@ -50,6 +33,7 @@ module.exports = {
           return user
         })
         post = post.toJSON()
+        post.comments = comments
         post.createdAt = formatTime(post.createdAt, 'yyyy-MM-dd hh:mm')
         post.favourite = favouriteUser
         if (post.img !== '') {
@@ -100,6 +84,8 @@ module.exports = {
         post.img = []
       }
       post = post.toJSON()
+      post.comments = []
+      post.favourite = []
       post.createdAt = formatTime(post.createdAt, 'yyyy-MM-dd hh:mm')
       res.send({
         post: post
@@ -114,6 +100,11 @@ module.exports = {
   async favouritePost (req, res) {
     try {
       const token = req.header('Authorization')
+      if (!token) {
+        return res.status(400).send({
+          error: 'token should be given!'
+        })
+      }
       const result = jwt.verify(token, config.authServiceToken.secretKey)
       if (!result) {
         return res.status(400).send({
@@ -186,6 +177,84 @@ module.exports = {
     } catch (err) {
       res.status(400).send({
         error: 'Error when delete post'
+      })
+    }
+  },
+  async addComment (req, res) {
+    try {
+      const token = req.header('Authorization')
+      if (!token) {
+        return res.status(400).send({
+          error: 'token should be given!'
+        })
+      }
+      const result = jwt.verify(token, config.authServiceToken.secretKey)
+      if (!result) {
+        return res.status(400).send({
+          error: 'The token is not valid! Please sign in and try again!'
+        })
+      }
+      var comment = await Comment.create({
+        content: req.body.content,
+        authorId: result.id,
+        replyToId: req.body.replyto,
+        postId: req.params.id
+      })
+      res.send({
+        comment: comment
+      })
+    } catch (err) {
+      console.log(err)
+      res.status(400).send({
+        error: 'Error when add comment'
+      })
+    }
+  },
+  async getComments (req, res) {
+    try {
+      var comments = await Comment.findAll({
+        where: {
+          postId: req.params.id
+        },
+        include: [{ model: User, as: 'author', attributes: ['id', 'username', 'email', 'phone', 'img'] }, { model: User, as: 'replyTo', attributes: ['id', 'username', 'email', 'phone', 'img'] }]
+      })
+      res.send({
+        comments: comments
+      })
+    } catch (err) {
+      res.status(400).send({
+        error: 'Error when getting comment'
+      })
+    }
+  },
+  async deleteComment (req, res) {
+    try {
+      const token = req.header('Authorization')
+      const result = jwt.verify(token, config.authServiceToken.secretKey)
+      if (!result) {
+        return res.status(400).send({
+          error: 'The token is not valid! Please sign in and try again!'
+        })
+      }
+
+      var comment = await Comment.findOne({
+        where: {
+          id: req.params.commentId,
+          authorId: result.id
+        }
+      })
+      if (!comment) {
+        res.status(400).send({
+          error: 'No post is found, please check your request!'
+        })
+      }
+      await comment.destroy()
+      res.send({
+        info: 'Delete comment successfully'
+      })
+    } catch (err) {
+      res.status(400).send({
+        error: 'Error when delete comment'
       })
     }
   }

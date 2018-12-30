@@ -14,6 +14,7 @@ var User = sequelize.import('./User.js')
 var Place = sequelize.import('./Place.js')
 var Event = sequelize.import('./Event.js')
 var Post = sequelize.import('./Post.js')
+var Comment = sequelize.import('./Comment.js')
 var Participation = sequelize.define('Participation')
 var Favourite = sequelize.define('Favourite')
 
@@ -23,6 +24,9 @@ User.belongsToMany(Event, { through: Participation })
 Event.belongsTo(Place, { as: 'place' })
 Event.belongsToMany(User, { through: Participation })
 Post.belongsTo(User, { as: 'author' })
+Comment.belongsTo(User, { as: 'author' })
+Comment.belongsTo(Post, { as: 'post' })
+Comment.belongsTo(User, { as: 'replyTo' })
 User.belongsToMany(Post, { through: Favourite })
 
 module.exports = {
@@ -31,6 +35,7 @@ module.exports = {
   Event: Event,
   Post: Post,
   Favourite: Favourite,
+  Comment: Comment,
   Participation: Participation,
   sequelize: sequelize,
   Sequelize: Sequelize
