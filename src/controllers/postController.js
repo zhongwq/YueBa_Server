@@ -19,6 +19,10 @@ module.exports = {
           },
           include: [{ model: User, as: 'author', attributes: ['id', 'username', 'email', 'phone', 'img'] }, { model: User, as: 'replyTo', attributes: ['id', 'username', 'email', 'phone', 'img'] }]
         })
+        for (var i = 0; i < comments.length; i++) {
+          comments[i] = comments[i].toJSON()
+          comments[i].createdAt = formatTime(comments[i].createdAt, 'yyyy-MM-dd hh:mm')
+        }
         var favouriteUser = await Favourite.findAll({
           where: {
             PostId: post.id
@@ -200,6 +204,8 @@ module.exports = {
         replyToId: req.body.replyto,
         postId: req.params.id
       })
+      comment = comment.toJSON()
+      comment.createdAt = formatTime(comment.createdAt, 'yyyy-MM-dd hh:mm')
       res.send({
         comment: comment
       })
@@ -218,6 +224,10 @@ module.exports = {
         },
         include: [{ model: User, as: 'author', attributes: ['id', 'username', 'email', 'phone', 'img'] }, { model: User, as: 'replyTo', attributes: ['id', 'username', 'email', 'phone', 'img'] }]
       })
+      for (var i = 0; i < comments.length; i++) {
+        comments[i] = comments[i].toJSON()
+        comments[i].createdAt = formatTime(comments[i].createdAt, 'yyyy-MM-dd hh:mm')
+      }
       res.send({
         comments: comments
       })
