@@ -49,6 +49,8 @@ module.exports = (app) => {
    */
   app.get('/events',
     eventController.getAllEvents)
+  app.get('/events/hot',
+    eventController.getHotEvents)
   app.get('/events/search',
     eventController.searchEvents)
   app.post('/events',

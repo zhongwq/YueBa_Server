@@ -26,7 +26,7 @@ function exch (arr, i, j) {
 
 function topK (arr, n, comp) {
   if (!arr || arr.length === 0 || n <= 0 || n > arr.length) {
-    return -1
+    return []
   }
   var ret = []
   for (var i = 0; i < n; i++) {
@@ -235,6 +235,7 @@ module.exports = {
   async getHotEvents (req, res) {
     try {
       var events = await Event.findAll({
+        order: [['startTime', 'DESC']],
         include: [{ model: User, as: 'organizer', attributes: ['id', 'username', 'email', 'phone', 'img'] }, { model: Place, as: 'place' }]
       }).map(async (event) => {
         var count = await Participation.findAll({
@@ -246,13 +247,14 @@ module.exports = {
         event.participantsNum = (count.length === undefined) ? 0 : count.length
         return event
       })
-      const result = topK(events, (events.length > 10) ? 5 : events.length, function (a, b) {
+      const result = topK(events, (events.length > 10) ? 10 : events.length, function (a, b) {
         if (!b) {
           return false
         }
         return a.participantsNum < b.participantsNum
       })
-      res.send({ result: result })
+
+      res.send({ events: result })
     } catch (err) {
       res.status(400).send({
         error: 'Some wrong occured when getting data!'
