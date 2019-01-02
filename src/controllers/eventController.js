@@ -214,7 +214,7 @@ module.exports = {
             $like: '%' + req.query.content + '%'
           }
         },
-        include: [{ model: User, as: 'owner', attributes: ['id', 'username', 'email', 'phone', 'img'] }]
+        include: [{ model: User, as: 'organizer', attributes: ['id', 'username', 'email', 'phone', 'img'] }]
       }).map(async (event) => {
         var count = await Participation.findAll({
           where: {
