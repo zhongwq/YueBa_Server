@@ -57,6 +57,59 @@ module.exports = {
       })
     }
   },
+  async getAllUserPosts (req, res) {
+    try {
+      var posts = await Post.findAll({
+        where: {
+          authorId: req.params.id
+        },
+        order: [['createdAt', 'DESC']],
+        include: [{ model: User, as: 'author', attributes: ['id', 'username', 'email', 'phone', 'img'] }]
+      }).map(async (post) => {
+        var comments = await Comment.findAll({
+          where: {
+            postId: post.id
+          },
+          include: [{ model: User, as: 'author', attributes: ['id', 'username', 'email', 'phone', 'img'] }, { model: User, as: 'replyTo', attributes: ['id', 'username', 'email', 'phone', 'img'] }]
+        })
+        for (var i = 0; i < comments.length; i++) {
+          comments[i] = comments[i].toJSON()
+          comments[i].createdAt = formatTime(comments[i].createdAt, 'yyyy-MM-dd hh:mm')
+        }
+        var favouriteUser = await Favourite.findAll({
+          where: {
+            PostId: post.id
+          }
+        }).map(async (favourite) => {
+          var user = await User.findOne({
+            where: {
+              id: favourite.UserId
+            },
+            attributes: ['id', 'username', 'email', 'phone', 'img']
+          })
+          return user
+        })
+        post = post.toJSON()
+        post.comments = comments
+        post.createdAt = formatTime(post.createdAt, 'yyyy-MM-dd hh:mm')
+        post.favourite = favouriteUser
+        if (post.img !== '') {
+          post.img = post.img.split(',')
+        } else {
+          post.img = []
+        }
+        return post
+      })
+      res.send({
+        posts: posts
+      })
+    } catch (err) {
+      console.log(err)
+      res.status(400).send({
+        error: 'Some wrong occoured when getting data!'
+      })
+    }
+  },
   async addPost (req, res) {
     try {
       const token = req.header('Authorization')

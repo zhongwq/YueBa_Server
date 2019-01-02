@@ -74,6 +74,8 @@ module.exports = (app) => {
    */
   app.get('/posts',
     postController.getAllPosts)
+  app.get('/posts/user/:id',
+    postController.getAllUserPosts)
   app.post('/posts',
     uploader.postImg.array('images', 9),
     postController.addPost)
