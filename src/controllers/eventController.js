@@ -158,7 +158,7 @@ module.exports = {
         })
         placeId = place.id
       }
-      if (placeId !== event.place.id) {
+      if (parseInt(placeId) !== event.placeId) {
         event.place.update({
           available: true
         })
