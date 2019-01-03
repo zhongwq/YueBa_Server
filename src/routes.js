@@ -38,7 +38,7 @@ module.exports = (app) => {
   app.put('/places/:id',
     uploader.placeImg.single('image'),
     placeController.updatePlace)
-  app.delete('/places/:id',
+  app.delete('/place/:id',
     placeController.deletePlace)
   app.get('/places/user/:id',
     placeController.getOwnedPlace)
