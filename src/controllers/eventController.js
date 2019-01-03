@@ -247,7 +247,7 @@ module.exports = {
         event.participantsNum = (count.length === undefined) ? 0 : count.length
         return event
       })
-      const result = topK(events, (events.length > 10) ? 10 : events.length, function (a, b) {
+      const result = topK(events, (events.length > 5) ? 5 : events.length, function (a, b) {
         if (!b) {
           return false
         }
