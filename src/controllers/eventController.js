@@ -46,10 +46,17 @@ module.exports = {
           error: 'token should be given!'
         })
       }
-      const result = jwt.verify(token, config.authServiceToken.secretKey)
-      if (!result) {
+      var result = null
+      try {
+        result = jwt.verify(token, config.authServiceToken.secretKey)
+        if (!result) {
+          return res.status(400).send({
+            error: 'The token is not valid! Please sign in and try again!'
+          })
+        }
+      } catch (err) {
         return res.status(400).send({
-          error: 'The token is not valid! Please sign in and try again!'
+          error: 'Token expired, please login again!'
         })
       }
       const imgDefault = 'public/images/eventImage/event.jpg'
@@ -93,7 +100,6 @@ module.exports = {
         event: eventJSON
       })
     } catch (err) {
-      console.log(err)
       res.status(400).send({
         error: err.errors[0].message
       })
@@ -106,10 +112,17 @@ module.exports = {
         error: 'token should be given!'
       })
     }
-    const result = jwt.verify(token, config.authServiceToken.secretKey)
-    if (!result) {
+    var result = null
+    try {
+      result = jwt.verify(token, config.authServiceToken.secretKey)
+      if (!result) {
+        return res.status(400).send({
+          error: 'The token is not valid! Please sign in and try again!'
+        })
+      }
+    } catch (err) {
       return res.status(400).send({
-        error: 'The token is not valid! Please sign in and try again!'
+        error: 'Token expired, please login again!'
       })
     }
     var event = await Event.findOne({
@@ -139,10 +152,17 @@ module.exports = {
           error: 'token should be given!'
         })
       }
-      const result = jwt.verify(token, config.authServiceToken.secretKey)
-      if (!result) {
+      var result = null
+      try {
+        result = jwt.verify(token, config.authServiceToken.secretKey)
+        if (!result) {
+          return res.status(400).send({
+            error: 'The token is not valid! Please sign in and try again!'
+          })
+        }
+      } catch (err) {
         return res.status(400).send({
-          error: 'The token is not valid! Please sign in and try again!'
+          error: 'Token expired, please login again!'
         })
       }
       const imgDefault = 'public/images/eventImage/event.jpg'
@@ -269,10 +289,17 @@ module.exports = {
           error: 'token should be given!'
         })
       }
-      const result = jwt.verify(token, config.authServiceToken.secretKey)
-      if (!result) {
+      var result = null
+      try {
+        result = jwt.verify(token, config.authServiceToken.secretKey)
+        if (!result) {
+          return res.status(400).send({
+            error: 'The token is not valid! Please sign in and try again!'
+          })
+        }
+      } catch (err) {
         return res.status(400).send({
-          error: 'The token is not valid! Please sign in and try again!'
+          error: 'Token expired, please login again!'
         })
       }
       var events = await Event.findAll({
@@ -305,10 +332,17 @@ module.exports = {
           error: 'token should be given!'
         })
       }
-      const result = jwt.verify(token, config.authServiceToken.secretKey)
-      if (!result) {
+      var result = null
+      try {
+        result = jwt.verify(token, config.authServiceToken.secretKey)
+        if (!result) {
+          return res.status(400).send({
+            error: 'The token is not valid! Please sign in and try again!'
+          })
+        }
+      } catch (err) {
         return res.status(400).send({
-          error: 'The token is not valid! Please sign in and try again!'
+          error: 'Token expired, please login again!'
         })
       }
       var participants = await Participation.findAll({
@@ -349,10 +383,17 @@ module.exports = {
           error: 'token should be given!'
         })
       }
-      const result = jwt.verify(token, config.authServiceToken.secretKey)
-      if (!result) {
+      var result = null
+      try {
+        result = jwt.verify(token, config.authServiceToken.secretKey)
+        if (!result) {
+          return res.status(400).send({
+            error: 'The token is not valid! Please sign in and try again!'
+          })
+        }
+      } catch (err) {
         return res.status(400).send({
-          error: 'The token is not valid! Please sign in and try again!'
+          error: 'Token expired, please login again!'
         })
       }
       var event = await Event.findOne({
@@ -392,10 +433,17 @@ module.exports = {
           error: 'token should be given!'
         })
       }
-      const result = jwt.verify(token, config.authServiceToken.secretKey)
-      if (!result) {
+      var result = null
+      try {
+        result = jwt.verify(token, config.authServiceToken.secretKey)
+        if (!result) {
+          return res.status(400).send({
+            error: 'The token is not valid! Please sign in and try again!'
+          })
+        }
+      } catch (err) {
         return res.status(400).send({
-          error: 'The token is not valid! Please sign in and try again!'
+          error: 'Token expired, please login again!'
         })
       }
       var participant = await Participation.findOne({
@@ -420,7 +468,11 @@ module.exports = {
       const token = req.header('Authorization')
       var result
       if (token) {
-        result = jwt.verify(token, config.authServiceToken.secretKey)
+        try {
+          result = jwt.verify(token, config.authServiceToken.secretKey)
+        } catch (err) {
+          result = null
+        }
       }
       var event = await Event.findOne({
         where: {

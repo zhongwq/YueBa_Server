@@ -118,10 +118,17 @@ module.exports = {
           error: 'token should be given!'
         })
       }
-      const result = jwt.verify(token, config.authServiceToken.secretKey)
-      if (!result) {
+      var result = null
+      try {
+        result = jwt.verify(token, config.authServiceToken.secretKey)
+        if (!result) {
+          return res.status(400).send({
+            error: 'The token is not valid! Please sign in and try again!'
+          })
+        }
+      } catch (err) {
         return res.status(400).send({
-          error: 'The token is not valid! Please sign in and try again!'
+          error: 'Token expired, please login again!'
         })
       }
       var imgArr = []
@@ -162,10 +169,17 @@ module.exports = {
           error: 'token should be given!'
         })
       }
-      const result = jwt.verify(token, config.authServiceToken.secretKey)
-      if (!result) {
+      var result = null
+      try {
+        result = jwt.verify(token, config.authServiceToken.secretKey)
+        if (!result) {
+          return res.status(400).send({
+            error: 'The token is not valid! Please sign in and try again!'
+          })
+        }
+      } catch (err) {
         return res.status(400).send({
-          error: 'The token is not valid! Please sign in and try again!'
+          error: 'Token expired, please login again!'
         })
       }
       await Favourite.create({
@@ -184,10 +198,22 @@ module.exports = {
   async unfavouritePost (req, res) {
     try {
       const token = req.header('Authorization')
-      const result = jwt.verify(token, config.authServiceToken.secretKey)
-      if (!result) {
+      if (!token) {
         return res.status(400).send({
-          error: 'The token is not valid! Please sign in and try again!'
+          error: 'token should be given!'
+        })
+      }
+      var result = null
+      try {
+        result = jwt.verify(token, config.authServiceToken.secretKey)
+        if (!result) {
+          return res.status(400).send({
+            error: 'The token is not valid! Please sign in and try again!'
+          })
+        }
+      } catch (err) {
+        return res.status(400).send({
+          error: 'Token expired, please login again!'
         })
       }
       var favourite = await Favourite.findOne({
@@ -209,10 +235,22 @@ module.exports = {
   async deletePost (req, res) {
     try {
       const token = req.header('Authorization')
-      const result = jwt.verify(token, config.authServiceToken.secretKey)
-      if (!result) {
+      if (!token) {
         return res.status(400).send({
-          error: 'The token is not valid! Please sign in and try again!'
+          error: 'token should be given!'
+        })
+      }
+      var result = null
+      try {
+        result = jwt.verify(token, config.authServiceToken.secretKey)
+        if (!result) {
+          return res.status(400).send({
+            error: 'The token is not valid! Please sign in and try again!'
+          })
+        }
+      } catch (err) {
+        return res.status(400).send({
+          error: 'Token expired, please login again!'
         })
       }
 
@@ -245,12 +283,20 @@ module.exports = {
           error: 'token should be given!'
         })
       }
-      const result = jwt.verify(token, config.authServiceToken.secretKey)
-      if (!result) {
+      var result = null
+      try {
+        result = jwt.verify(token, config.authServiceToken.secretKey)
+        if (!result) {
+          return res.status(400).send({
+            error: 'The token is not valid! Please sign in and try again!'
+          })
+        }
+      } catch (err) {
         return res.status(400).send({
-          error: 'The token is not valid! Please sign in and try again!'
+          error: 'Token expired, please login again!'
         })
       }
+
       var comment = await Comment.create({
         content: req.body.content,
         authorId: result.id,
@@ -293,10 +339,22 @@ module.exports = {
   async deleteComment (req, res) {
     try {
       const token = req.header('Authorization')
-      const result = jwt.verify(token, config.authServiceToken.secretKey)
-      if (!result) {
+      if (!token) {
         return res.status(400).send({
-          error: 'The token is not valid! Please sign in and try again!'
+          error: 'token should be given!'
+        })
+      }
+      var result = null
+      try {
+        result = jwt.verify(token, config.authServiceToken.secretKey)
+        if (!result) {
+          return res.status(400).send({
+            error: 'The token is not valid! Please sign in and try again!'
+          })
+        }
+      } catch (err) {
+        return res.status(400).send({
+          error: 'Token expired, please login again!'
         })
       }
 

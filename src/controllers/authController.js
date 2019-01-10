@@ -92,10 +92,17 @@ module.exports = {
           error: 'token should be given!'
         })
       }
-      const result = jwt.verify(token, config.authServiceToken.secretKey)
-      if (!result) {
+      var result = null
+      try {
+        result = jwt.verify(token, config.authServiceToken.secretKey)
+        if (!result) {
+          return res.status(400).send({
+            error: 'The token is not valid! Please sign in and try again!'
+          })
+        }
+      } catch (err) {
         return res.status(400).send({
-          error: 'The token is not valid! Please sign in and try again!'
+          error: 'Token expired, please login again!'
         })
       }
       var user = await User.findOne({ where: { id: result.id } })
@@ -129,7 +136,7 @@ module.exports = {
       })
     } catch (err) {
       res.status(400).send({
-        error: 'Somthing when update icon!'
+        error: 'Somthing wrong when update icon!'
       })
     }
   }
