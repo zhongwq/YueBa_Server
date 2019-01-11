@@ -56,6 +56,8 @@ module.exports = (app) => {
   app.post('/events',
     uploader.eventImg.single('image'),
     eventController.addEvent)
+  app.get('/event/participates',
+    eventController.getAllEventsParticipatesIn)
   app.put('/event/:id',
     uploader.eventImg.single('image'),
     eventController.updateEvent)
@@ -65,8 +67,6 @@ module.exports = (app) => {
     eventController.deleteEvent)
   app.get('/event/user/:id',
     eventController.getAllOwnedEvents)
-  app.get('/event/participates',
-    eventController.getAllEventsParticipatesIn)
   app.post('/event/participate',
     eventController.participateEvent)
   app.post('/event/exit',

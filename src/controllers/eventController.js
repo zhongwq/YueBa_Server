@@ -350,6 +350,7 @@ module.exports = {
           UserId: result.id
         }
       }).map(async (participant) => {
+        console.log(participant)
         var res = await Event.findOne({
           where: {
             id: participant.EventId
@@ -370,7 +371,7 @@ module.exports = {
       })
     } catch (err) {
       console.log(err)
-      res.status(400).send({
+      return res.status(400).send({
         error: 'Some wrong occured when getting data!'
       })
     }
@@ -459,7 +460,7 @@ module.exports = {
     } catch (err) {
       console.log(err)
       res.status(400).send({
-        error: 'Some wrong occured when participate in event!!'
+        error: 'Some wrong occured when exit event!!'
       })
     }
   },
@@ -521,7 +522,7 @@ module.exports = {
     } catch (err) {
       console.log(err.message)
       res.status(400).send({
-        error: 'Some wrong occured when participate in event!!'
+        error: 'Some wrong occured when getting detail!!'
       })
     }
   }
