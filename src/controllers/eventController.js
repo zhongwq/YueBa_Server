@@ -326,31 +326,11 @@ module.exports = {
   },
   async getAllEventsParticipatesIn (req, res) {
     try {
-      const token = req.header('Authorization')
-      if (!token) {
-        return res.status(400).send({
-          error: 'token should be given!'
-        })
-      }
-      var result = null
-      try {
-        result = jwt.verify(token, config.authServiceToken.secretKey)
-        if (!result) {
-          return res.status(400).send({
-            error: 'The token is not valid! Please sign in and try again!'
-          })
-        }
-      } catch (err) {
-        return res.status(400).send({
-          error: 'Token expired, please login again!'
-        })
-      }
       var participants = await Participation.findAll({
         where: {
-          UserId: result.id
+          UserId: req.params.id
         }
       }).map(async (participant) => {
-        console.log(participant)
         var res = await Event.findOne({
           where: {
             id: participant.EventId
@@ -370,8 +350,7 @@ module.exports = {
         events: participants
       })
     } catch (err) {
-      console.log(err)
-      return res.status(400).send({
+      res.status(400).send({
         error: 'Some wrong occured when getting data!'
       })
     }

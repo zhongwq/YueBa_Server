@@ -56,7 +56,7 @@ module.exports = (app) => {
   app.post('/events',
     uploader.eventImg.single('image'),
     eventController.addEvent)
-  app.get('/event/participates',
+  app.get('/event/participates/user/:id',
     eventController.getAllEventsParticipatesIn)
   app.put('/event/:id',
     uploader.eventImg.single('image'),
