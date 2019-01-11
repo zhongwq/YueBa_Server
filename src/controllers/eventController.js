@@ -283,28 +283,9 @@ module.exports = {
   },
   async getAllOwnedEvents (req, res) {
     try {
-      const token = req.header('Authorization')
-      if (!token) {
-        return res.status(400).send({
-          error: 'token should be given!'
-        })
-      }
-      var result = null
-      try {
-        result = jwt.verify(token, config.authServiceToken.secretKey)
-        if (!result) {
-          return res.status(400).send({
-            error: 'The token is not valid! Please sign in and try again!'
-          })
-        }
-      } catch (err) {
-        return res.status(400).send({
-          error: 'Token expired, please login again!'
-        })
-      }
       var events = await Event.findAll({
         where: {
-          organizerId: result.id
+          organizerId: req.params.id
         },
         include: [{ model: User, as: 'organizer', attributes: ['id', 'username', 'email', 'phone', 'img'] }, { model: Place, as: 'place' }]
       }).map(async (event) => {

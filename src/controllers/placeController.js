@@ -62,28 +62,9 @@ module.exports = {
   },
   async getOwnedPlace (req, res) {
     try {
-      const token = req.header('Authorization')
-      if (!token) {
-        return res.status(400).send({
-          error: 'token should be given!'
-        })
-      }
-      var result = null
-      try {
-        result = jwt.verify(token, config.authServiceToken.secretKey)
-        if (!result) {
-          return res.status(400).send({
-            error: 'The token is not valid! Please sign in and try again!'
-          })
-        }
-      } catch (err) {
-        return res.status(400).send({
-          error: 'Token expired, please login again!'
-        })
-      }
       var places = await Place.findAll({
         where: {
-          ownerId: result.id
+          ownerId: req.params.id
         },
         include: [{ model: User, as: 'owner', attributes: ['id', 'username', 'email', 'phone', 'img'] }]
       })
