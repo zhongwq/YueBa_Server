@@ -38,7 +38,7 @@ module.exports = (app) => {
   app.put('/places/:id',
     uploader.placeImg.single('image'),
     placeController.updatePlace)
-  app.delete('/place/:id',
+  app.delete('/places/:id',
     placeController.deletePlace)
   app.get('/places/user/:id',
     placeController.getOwnedPlace)
@@ -56,16 +56,16 @@ module.exports = (app) => {
   app.post('/events',
     uploader.eventImg.single('image'),
     eventController.addEvent)
-  app.get('/event/participates/user/:id',
+  app.get('/events/participates/user/:id',
     eventController.getAllEventsParticipatesIn)
-  app.put('/event/:id',
+  app.put('/events/:id',
     uploader.eventImg.single('image'),
     eventController.updateEvent)
   app.get('/event/:id',
     eventController.getDetail)
-  app.delete('/event/:id',
+  app.delete('/events/:id',
     eventController.deleteEvent)
-  app.get('/event/user/:id',
+  app.get('/events/user/:id',
     eventController.getAllOwnedEvents)
   app.post('/event/participate',
     eventController.participateEvent)
@@ -85,7 +85,7 @@ module.exports = (app) => {
     postController.favouritePost)
   app.post('/post/unfavourite',
     postController.unfavouritePost)
-  app.delete('/post/:id',
+  app.delete('/posts/:id',
     postController.deletePost)
   app.get('/post/:id/comments',
     postController.getComments)

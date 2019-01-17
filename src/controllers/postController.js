@@ -51,7 +51,6 @@ module.exports = {
         posts: posts
       })
     } catch (err) {
-      console.log(err)
       res.status(400).send({
         error: 'Some wrong occoured when getting data!'
       })
