@@ -112,7 +112,7 @@ module.exports = {
         })
       }
       if (req.body.password) {
-        user.update({
+        await user.update({
           username: req.body.username,
           email: req.body.email,
           password: req.body.password,
@@ -120,7 +120,7 @@ module.exports = {
           img: (req.file) ? req.file.path : user.img
         })
       } else {
-        user.update({
+        await user.update({
           username: req.body.username,
           email: req.body.email,
           phone: req.body.phone,
@@ -136,7 +136,7 @@ module.exports = {
       })
     } catch (err) {
       res.status(400).send({
-        error: 'Somthing wrong when update icon!'
+        error: err.errors ? err.errors[0].message : 'Some wrong occured when updating info!'
       })
     }
   }
